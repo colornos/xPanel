@@ -1,4 +1,4 @@
-# cPanel-like Control Panel
+# xPanel-is a cPanel like Control Panel
 
 This is a lightweight, cPanel-like control panel for managing file systems, databases, and multiple servers. It also includes basic domain management functionality.
 
