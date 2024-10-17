@@ -1,10 +1,10 @@
 
 ---
 
-### Step 3: `database.sql` (Database Setup Script)
+### 3. `database.sql` (Database Setup Script)
 
 ```sql
-CREATE DATABASE control_panel_db;
+CREATE DATABASE xpanel_db;
 
 CREATE TABLE servers (
     id INT AUTO_INCREMENT PRIMARY KEY,
