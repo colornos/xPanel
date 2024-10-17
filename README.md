@@ -12,5 +12,5 @@ This is a lightweight, cPanel-like control panel for managing file systems, data
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/control-panel/control-panel.git
-   cd cpanel-like-control-panel
+   git clone https://github.com/colornos/control-panel.git
+   cd control-panel
