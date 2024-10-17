@@ -13,5 +13,5 @@ xPanel is a lightweight control panel for managing file systems, databases, mult
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/colornos/xpanel.git
+   git clone https://github.com/colornos/xPanel.git
    cd xpanel
