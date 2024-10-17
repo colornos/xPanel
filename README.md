@@ -1,16 +1,17 @@
-# xPanel-is a cPanel like Control Panel
+# xPanel
 
-This is a lightweight, cPanel-like control panel for managing file systems, databases, and multiple servers. It also includes basic domain management functionality.
+xPanel is a lightweight control panel for managing file systems, databases, multiple servers, and domain settings. It also displays system info like CPU load, memory usage, disk usage, and network traffic.
 
 ## Features
 - File Manager
 - MySQL Database Management
 - Multi-Server SSH Management
-- Basic Domain Management
+- Domain Management
+- System Info (CPU, Memory, Disk, and Network)
 
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/colornos/control-panel.git
-   cd control-panel
+   git clone https://github.com/colornos/xpanel.git
+   cd xpanel
