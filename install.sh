@@ -5,8 +5,15 @@ echo "Starting xPanel Installation..."
 # Update and upgrade the system
 sudo apt update && sudo apt upgrade -y
 
-# Install Apache, PHP, MySQL, SSH, and Certbot for SSL
-sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql sshpass certbot python3-certbot-apache xdg-utils -y
+# Install Apache, PHP, MySQL, SSH, Certbot, and phpMyAdmin
+sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xdg-utils -y
+
+# Configure phpMyAdmin (automatically link it to Apache)
+sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+
+# Enable required PHP modules for phpMyAdmin
+sudo phpenmod mbstring
+sudo systemctl restart apache2
 
 # Get the server's IP address
 IP_ADDRESS=$(hostname -I | awk '{print $1}')
