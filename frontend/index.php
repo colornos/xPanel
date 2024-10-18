@@ -47,6 +47,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xPanel Dashboard</title>
+
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -97,9 +101,9 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .icon {
             text-align: center;
         }
-        .icon img {
-            width: 50px;
-            height: 50px;
+        .icon i {
+            font-size: 50px;
+            color: #0056A4;
             margin-bottom: 5px;
         }
         .icon div {
@@ -177,35 +181,35 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="section-header">Files</div>
                 <div class="icons-grid">
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="File Manager">
+                        <i class="fas fa-folder"></i>
                         <div><a href="file_manager.php">File Manager</a></div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Images">
+                        <i class="fas fa-image"></i>
                         <div>Images</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
+                        <i class="fas fa-user-shield"></i>
                         <div>FTP Accounts</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
+                        <i class="fas fa-network-wired"></i>
                         <div>FTP Connections</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
+                        <i class="fas fa-user-lock"></i>
                         <div>Directory Privacy</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
+                        <i class="fas fa-hdd"></i>
                         <div>Disk Usage</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup">
+                        <i class="fas fa-database"></i>
                         <div>Backup</div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
+                        <i class="fas fa-magic"></i>
                         <div>Backup Wizard</div>
                     </div>
                 </div>
@@ -216,23 +220,23 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="section-header">Databases</div>
                 <div class="icons-grid">
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
+                        <i class="fas fa-database"></i>
                         <div><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
+                        <i class="fas fa-server"></i>
                         <div><a href="database.php">MySQL Databases</a></div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
+                        <i class="fas fa-database"></i>
                         <div><a href="database.php">MySQL Database Wizard</a></div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
+                        <i class="fas fa-cloud"></i>
                         <div><a href="database.php">Remote MySQL</a></div>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
+                        <i class="fas fa-server"></i>
                         <div>PostgreSQL Databases</div>
                     </div>
                 </div>
@@ -243,7 +247,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="section-header">Terminal</div>
                 <div class="icons-grid">
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Terminal">
+                        <i class="fas fa-terminal"></i>
                         <div><a href="http://<?php echo $primary_domain; ?>:7681" target="_blank">Live Terminal</a></div>
                     </div>
                 </div>
