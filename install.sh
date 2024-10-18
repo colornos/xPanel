@@ -41,6 +41,10 @@ sudo systemctl restart apache2
 # Install SSL using Let's Encrypt for the local IP (use --register-unsafely-without-email for testing purposes)
 sudo certbot --apache -d $IP_ADDRESS --register-unsafely-without-email --non-interactive --agree-tos
 
+# Configure sudoers to allow www-data to run system commands without a password
+echo "Configuring sudoers to allow www-data to run system commands without a password..."
+sudo bash -c "echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/uptime, /usr/bin/free, /bin/df, /bin/cat, /usr/bin/ip' >> /etc/sudoers"
+
 # Create a shortcut command to open xPanel in the default browser using the IP address
 echo "Creating a command to easily open xPanel..."
 sudo bash -c "echo 'xdg-open https://$IP_ADDRESS/xpanel' > /usr/local/bin/xpanel"
