@@ -39,7 +39,7 @@ sudo chown -R www-data:www-data /var/www/html/xpanel/
 sudo systemctl restart apache2
 
 # Install SSL using Let's Encrypt (adjust to your domain name)
-DOMAIN_NAME="your-domain.com"  # Replace with your domain name
+DOMAIN_NAME="colornos.ddns.net"  # Replace with your domain name
 sudo certbot --apache -d $DOMAIN_NAME
 
 # Create a shortcut command to open xPanel in the default browser using the server's IP address
