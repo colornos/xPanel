@@ -7,7 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            margin: 20px;
+            margin: 0;
+            padding: 0;
         }
         .file-list ul {
             padding-left: 0;
@@ -19,7 +20,7 @@
         #editor {
             border: 1px solid #ccc;
             width: 100%;
-            margin-bottom: 15px;
+            height: calc(100vh - 100px); /* Initially, fill most of the screen */
             transition: height 0.3s ease;
         }
         .fullscreen {
@@ -32,6 +33,11 @@
             margin: 0;
             padding: 0;
         }
+        .fullscreen #editor {
+            height: 100vh !important;
+            width: 100vw !important;
+            border: none;
+        }
         /* Keep the buttons always visible at the top right in regular and fullscreen mode */
         #button-group {
             position: fixed;
@@ -41,9 +47,11 @@
             display: flex;
             gap: 10px;
         }
-        /* Ensure fullscreen editor uses the entire viewport height */
-        .fullscreen #editor {
-            height: calc(100vh - 60px); /* Subtract height for the button bar */
+        /* Ensure no padding/margin in fullscreen */
+        .fullscreen-body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -97,9 +105,9 @@
                     document.getElementById('file_content').value = editor.getValue();
                 });
 
-                // Set the initial editor height to almost fill the screen
+                // Set the initial editor height to fill most of the screen
                 function setEditorHeight() {
-                    var height = window.innerHeight - 150; // Adjust '150' to leave space for header/buttons
+                    var height = window.innerHeight - 100; // Adjust '100' to leave space for header/buttons
                     document.getElementById('editor').style.height = height + 'px';
                     editor.resize();
                 }
@@ -110,13 +118,14 @@
                 // Toggle fullscreen mode
                 var isFullscreen = false;
                 document.getElementById('fullscreen-btn').addEventListener('click', function() {
+                    var bodyElement = document.body;
                     var editorElement = document.getElementById('editor');
                     if (isFullscreen) {
-                        document.body.classList.remove('fullscreen');
+                        bodyElement.classList.remove('fullscreen-body');
                         editorElement.classList.remove('fullscreen');
                         this.textContent = "Toggle Fullscreen";
                     } else {
-                        document.body.classList.add('fullscreen');
+                        bodyElement.classList.add('fullscreen-body');
                         editorElement.classList.add('fullscreen');
                         this.textContent = "Exit Fullscreen";
                     }
