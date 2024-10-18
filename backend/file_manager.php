@@ -49,7 +49,7 @@
             text-decoration: none;
         }
         .fullscreen {
-            position: fixed !important;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
@@ -60,8 +60,8 @@
             overflow: hidden;
         }
         .fullscreen #editor {
-            height: 100vh !important;
-            width: 100vw !important;
+            height: 100vh;
+            width: 100vw;
             border: none;
         }
     </style>
