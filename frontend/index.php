@@ -195,15 +195,15 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="content-header-light col-12">
                 <div class="row">
                     <div class="content-header-left col-md-9 col-12 mb-2">
-                        <h3 class="content-header-title">Main Page</h3>
+                        <h3 class="content-header-title">x</h3>
                         <div class="row breadcrumbs-top">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="index.php">Home</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">Next folder</a>
+                                    <li class="breadcrumb-item"><a href="#">Sub folder</a>
                                     </li>
-                                    <li class="breadcrumb-item active">Next folder
+                                    <li class="breadcrumb-item active">Next sub folder
                                     </li>
                                 </ol>
                             </div>
