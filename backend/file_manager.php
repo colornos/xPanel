@@ -36,10 +36,10 @@
             justify-content: flex-end;
             margin-bottom: 10px;
         }
-        /* Keep the buttons visible in fullscreen mode */
+        /* Keep the buttons visible in fullscreen mode at the top right */
         .fullscreen-buttons {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             z-index: 10000;
             display: flex;
