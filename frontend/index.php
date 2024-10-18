@@ -60,8 +60,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/ico/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="app-assets/fonts/material-icons/material-icons.css">
-    <!-- Include Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/material-vendors.min.css">
@@ -79,8 +77,12 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="app-assets/css/core/menu/menu-types/material-vertical-compact-menu.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/core/colors/material-palette-gradient.css">
+    <link rel="stylesheet" type="text/css" href="app-assets/fonts/mobiriseicons/24px/mobirise/style.css">
     <!-- END: Page CSS-->
 
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
     <style>
         /* Custom styling for the sections */
         .container {
