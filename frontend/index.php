@@ -1,3 +1,30 @@
+<?php
+// Check if this is an AJAX request for live stats
+if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
+    // Execute the bash script to get system stats
+    $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
+    $stats = json_decode($system_stats, true);
+
+    // Prepare data for the frontend
+    $data = [
+        'cpu_load_1' => (float) $stats['cpu_load'],
+        'cpu_load_5' => (float) $stats['cpu_load'],
+        'cpu_load_15' => (float) $stats['cpu_load'],
+        'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
+        'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
+        'disk_total' => 100, // Placeholder, replace with actual values
+        'disk_used' => (float) trim($stats['disk_usage'], '%'), // Disk usage as percentage
+        'rx_mb' => (float) $stats['rx_mb'],
+        'tx_mb' => (float) $stats['tx_mb']
+    ];
+
+    // Return JSON response
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,7 +192,7 @@
 
         // Function to update charts via AJAX
         function updateCharts() {
-            fetch('/xpanel/get_live_stats.php')
+            fetch('?action=get_stats') // Same script for fetching live stats
                 .then(response => response.json())
                 .then(data => {
                     // Update CPU Load Chart
