@@ -5,8 +5,8 @@ echo "Starting xPanel Installation..."
 # Update and upgrade the system
 sudo apt update && sudo apt upgrade -y
 
-# Install Apache, PHP, MySQL, SSH, Certbot, phpMyAdmin, and xRDP
-sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xrdp xdg-utils -y
+# Install Apache, PHP, MySQL, SSH, Certbot, phpMyAdmin, Shellinabox, and xRDP
+sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xdg-utils shellinabox xrdp -y
 
 # Configure phpMyAdmin (automatically link it to Apache)
 sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
@@ -16,7 +16,7 @@ sudo phpenmod mbstring
 sudo systemctl restart apache2
 
 # Get the server's IP address (this will be used as the domain for local testing)
-IP_ADDRESS="192.168.0.19"
+IP_ADDRESS=$(hostname -I | awk '{print $1}')
 
 # Fetch the Ubuntu username
 UBUNTU_USER=$(whoami)
@@ -78,6 +78,28 @@ EOL
 # Make the script executable
 sudo chmod +x /var/www/html/xpanel/get_system_stats.sh
 
+# Shellinabox installation and configuration
+echo "Installing and configuring Shellinabox..."
+sudo apt-get install shellinabox -y
+
+# Start Shellinabox service
+sudo systemctl enable shellinabox
+sudo systemctl start shellinabox
+
+# Modify the Shellinabox default configuration to bind to port 4200
+sudo sed -i 's/^SHELLINABOX_PORT=.*/SHELLINABOX_PORT=4200/' /etc/default/shellinabox
+
+# Restart Shellinabox service
+sudo systemctl restart shellinabox
+
+# Verify if Shellinabox is running on port 4200
+sudo netstat -nap | grep shellinabox
+
+# RDP installation
+echo "Installing and configuring xRDP..."
+sudo systemctl enable xrdp
+sudo systemctl start xrdp
+
 # Install SSL using Let's Encrypt for the local IP (use --register-unsafely-without-email for testing purposes)
 sudo certbot --apache -d $IP_ADDRESS --register-unsafely-without-email --non-interactive --agree-tos
 
@@ -90,23 +112,9 @@ echo "Creating a command to easily open xPanel..."
 sudo bash -c "echo 'xdg-open https://$IP_ADDRESS/xpanel' > /usr/local/bin/xpanel"
 sudo chmod +x /usr/local/bin/xpanel
 
-# Install and configure xRDP for remote terminal access
-echo "Installing and configuring xRDP for terminal access..."
-sudo apt install xfce4 xfce4-goodies -y
-sudo systemctl enable xrdp
-sudo systemctl start xrdp
-
-# Set Xfce as the default session for xRDP
-echo xfce4-session >~/.xsession
-sudo systemctl restart xrdp
-
-# Allow RDP port 3389 through the firewall
-sudo ufw allow 3389/tcp
-
 # Automatically open xPanel after installation using the IP address
 echo "Opening xPanel in your default browser..."
 xdg-open "https://$IP_ADDRESS/xpanel"
 
 # Completion message
 echo "Installation complete! You can now access xPanel at https://$IP_ADDRESS/xpanel or by typing 'xpanel' in the terminal."
-echo "You can also access the terminal via RDP on port 3389."
