@@ -5,7 +5,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
     $stats = json_decode($system_stats, true);
 
-    // Prepare system stats
+    // Prepare additional system stats
     $current_user = trim(shell_exec('whoami'));
     $home_directory = trim(shell_exec('echo ~' . $current_user));
     $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
@@ -13,7 +13,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
     $data = [
-        'cpu_load' => (float) trim(explode(' ', $stats['cpu_load'])[0]),
+        'cpu_usage' => (float) $stats['cpu_usage'],
+        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A',
+        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A',
         'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
         'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
         'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
@@ -23,7 +25,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
         'current_user' => $current_user,
         'primary_domain' => $primary_domain,
         'home_directory' => $home_directory,
-        'last_login_ip' => $last_login_ip
+        'last_login_ip' => $last_login_ip,
+        'block_devices' => $stats['block_devices'],
+        'sys_logs' => $stats['sys_logs']
     ];
 
     header('Content-Type: application/json');
@@ -276,6 +280,33 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
             <div class="sidebar-header">Live Statistics</div>
 
+            <!-- CPU Usage -->
+            <div class="progress-container">
+                <div class="progress-label">CPU Usage</div>
+                <div class="stat-value">
+                    <strong><span id="cpu_usage_value"><?php echo $stats['cpu_usage']; ?></span>%</strong>
+                </div>
+                <div class="progress-bar">
+                    <span class="cpu-load" id="cpu_usage" style="width: <?php echo $stats['cpu_usage']; ?>%;"></span>
+                </div>
+            </div>
+
+            <!-- GPU Usage -->
+            <div class="stat">
+                <div class="stat-label">GPU Usage:</div>
+                <div class="stat-value">
+                    <strong><span id="gpu_usage_value"><?php echo $stats['gpu_usage']; ?></span></strong>
+                </div>
+            </div>
+
+            <!-- CPU Temperature -->
+            <div class="stat">
+                <div class="stat-label">CPU Temperature:</div>
+                <div class="stat-value">
+                    <strong><span id="cpu_temp_value"><?php echo $stats['cpu_temp']; ?></span></strong>
+                </div>
+            </div>
+
             <!-- Disk Usage -->
             <div class="progress-container">
                 <div class="progress-label">Disk Usage</div>
@@ -321,6 +352,22 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <span class="network-traffic" id="tx_mb" style="width: <?php echo $stats['tx_mb'] / 10; ?>%;"></span>
                 </div>
             </div>
+
+            <!-- Block Devices -->
+            <div class="stat">
+                <div class="stat-label">Block Devices:</div>
+                <div class="stat-value">
+                    <pre id="block_devices_value"><?php echo $stats['block_devices']; ?></pre>
+                </div>
+            </div>
+
+            <!-- System Logs -->
+            <div class="stat">
+                <div class="stat-label">System Logs:</div>
+                <div class="stat-value">
+                    <pre id="sys_logs_value"><?php echo $stats['sys_logs']; ?></pre>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -330,13 +377,21 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             fetch('?action=get_stats')
                 .then(response => response.json())
                 .then(data => {
-                    // Update live stats
-                    document.getElementById('current_user').textContent = data.current_user;
-                    document.getElementById('primary_domain').textContent = data.primary_domain;
-                    document.getElementById('home_directory').textContent = data.home_directory;
-                    document.getElementById('last_login_ip').textContent = data.last_login_ip;
+                    // Update CPU and GPU usage
+                    document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
+                    document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
+                    document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
 
-                    // Update progress bars and values
+                    // Update CPU temperature
+                    document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
+
+                    // Update block devices
+                    document.getElementById('block_devices_value').textContent = data.block_devices;
+
+                    // Update system logs
+                    document.getElementById('sys_logs_value').textContent = data.sys_logs;
+
+                    // Existing updates for memory, disk, and network stats
                     document.getElementById('disk_usage').style.width = data.disk_used + '%';
                     document.getElementById('mem_usage').style.width = data.mem_usage + '%';
                     document.getElementById('rx_mb').style.width = (data.rx_mb / 10) + '%';
