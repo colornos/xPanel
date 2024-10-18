@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xPanel - File Manager</title>
+    <!-- Bootstrap 4 for styling and breadcrumbs -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="app-assets/css/material.css">
@@ -76,6 +78,9 @@
             height: calc(100vh - 120px); /* Leaves space for the breadcrumb */
             z-index: 999;
         }
+        .buttons-below-breadcrumb {
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body class="vertical-layout vertical-compact-menu material-vertical-layout material-layout 1-column fixed-navbar">
@@ -100,25 +105,18 @@
     <div class="content-header row">
         <div class="content-header-light col-12">
             <div class="row">
-                <div class="content-header-left col-md-6 col-12 mb-2">
+                <div class="content-header-left col-md-9 col-12 mb-2">
                     <h3 class="content-header-title">File Manager</h3>
                     <div class="row breadcrumbs-top">
                         <div class="breadcrumb-wrapper col-12">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                                <li class="breadcrumb-item active">File Manager</li>
-                            </ol>
+                            <!-- Bootstrap 4 Breadcrumb -->
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">File Manager</li>
+                                </ol>
+                            </nav>
                         </div>
-                    </div>
-                </div>
-                <!-- Buttons at the top right -->
-                <div class="content-header-right col-md-6 col-12 d-flex align-items-center justify-content-end">
-                    <div class="buttons-top-right">
-                        <form method="POST" action="">
-                            <input type="hidden" name="file_path" value="<?php echo htmlspecialchars($file_path); ?>">
-                            <button type="submit" class="btn btn-primary">Save File</button>
-                            <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -156,11 +154,17 @@
                                 $file_content = file_get_contents($file_path);
                                 ?>
                                 <h2>Editing: <?php echo htmlspecialchars($file_path); ?></h2>
-                                <form method="POST" action="">
+                                <form id="file-form" method="POST" action="">
                                     <input type="hidden" name="file_path" value="<?php echo htmlspecialchars($file_path); ?>">
                                     <div id="editor"><?php echo htmlspecialchars($file_content); ?></div>
                                     <textarea name="file_content" id="file_content" style="display:none;"><?php echo htmlspecialchars($file_content); ?></textarea>
                                 </form>
+
+                                <!-- Buttons show only when a file is selected -->
+                                <div class="buttons-below-breadcrumb">
+                                    <button type="submit" form="file-form" class="btn btn-primary">Save File</button>
+                                    <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
+                                </div>
 
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
                                 <script>
@@ -248,8 +252,8 @@
 </div>
 <!-- END: Content-->
 
-<script src="app-assets/vendors/js/material-vendors.min.js"></script>
-<script src="app-assets/js/core/app-menu.js"></script>
-<script src="app-assets/js/core/app.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
