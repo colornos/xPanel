@@ -49,10 +49,7 @@
             text-decoration: none;
         }
         .fullscreen {
-            position: fixed !important;
-            top: 0;
-            left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             z-index: 9999;
             margin: 0;
@@ -60,9 +57,24 @@
             overflow: hidden;
         }
         .fullscreen #editor {
-            height: 100vh !important;
-            width: 100vw !important;
-            border: none;
+            height: calc(100vh - 120px); /* Leaves space for the header and breadcrumb */
+            width: 100%;
+        }
+        .buttons-top-right {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .breadcrumb-wrapper {
+            flex: 1;
+        }
+        /* Fullscreen editor still shows header and breadcrumb */
+        .editor-fullscreen {
+            position: fixed;
+            top: 60px; /* Below the header */
+            width: 100%;
+            height: calc(100vh - 120px); /* Leaves space for the breadcrumb */
+            z-index: 999;
         }
     </style>
 </head>
@@ -88,7 +100,7 @@
     <div class="content-header row">
         <div class="content-header-light col-12">
             <div class="row">
-                <div class="content-header-left col-md-9 col-12 mb-2">
+                <div class="content-header-left col-md-6 col-12 mb-2">
                     <h3 class="content-header-title">File Manager</h3>
                     <div class="row breadcrumbs-top">
                         <div class="breadcrumb-wrapper col-12">
@@ -99,9 +111,20 @@
                         </div>
                     </div>
                 </div>
+                <!-- Buttons at the top right -->
+                <div class="content-header-right col-md-6 col-12 d-flex align-items-center justify-content-end">
+                    <div class="buttons-top-right">
+                        <form method="POST" action="">
+                            <input type="hidden" name="file_path" value="<?php echo htmlspecialchars($file_path); ?>">
+                            <button type="submit" class="btn btn-primary">Save File</button>
+                            <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="content-wrapper">
         <div class="container">
             <div class="main-content">
@@ -137,10 +160,6 @@
                                     <input type="hidden" name="file_path" value="<?php echo htmlspecialchars($file_path); ?>">
                                     <div id="editor"><?php echo htmlspecialchars($file_content); ?></div>
                                     <textarea name="file_content" id="file_content" style="display:none;"><?php echo htmlspecialchars($file_content); ?></textarea>
-                                    <div id="button-group">
-                                        <button type="submit" class="btn btn-primary">Save File</button>
-                                        <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
-                                    </div>
                                 </form>
 
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
@@ -163,7 +182,7 @@
 
                                     // Set the initial editor height to fill most of the screen
                                     function setEditorHeight() {
-                                        var height = window.innerHeight - 100; // Adjust '100' to leave space for header/buttons
+                                        var height = window.innerHeight - 120; // Leaves space for header and breadcrumb
                                         document.getElementById('editor').style.height = height + 'px';
                                         editor.resize();
                                     }
@@ -174,15 +193,12 @@
                                     // Toggle fullscreen mode
                                     var isFullscreen = false;
                                     document.getElementById('fullscreen-btn').addEventListener('click', function() {
-                                        var bodyElement = document.body;
                                         var editorElement = document.getElementById('editor');
                                         if (isFullscreen) {
-                                            bodyElement.classList.remove('fullscreen');
-                                            editorElement.classList.remove('fullscreen');
+                                            editorElement.classList.remove('editor-fullscreen');
                                             this.textContent = "Toggle Fullscreen";
                                         } else {
-                                            bodyElement.classList.add('fullscreen');
-                                            editorElement.classList.add('fullscreen');
+                                            editorElement.classList.add('editor-fullscreen');
                                             this.textContent = "Exit Fullscreen";
                                         }
                                         isFullscreen = !isFullscreen;
