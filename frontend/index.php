@@ -248,10 +248,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                                 <i class="fas fa-server"></i>
                                 <div><a href="database.php">MySQL Databases</a></div>
                             </div>
-                            <div class="icon">
-                                <i class="fas fa-database"></i>
-                                <div><a href="database.php">MySQL Database Wizard</a></div>
-                            </div>
                         </div>
                     </div>
 
