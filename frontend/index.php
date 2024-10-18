@@ -248,7 +248,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="icons-grid">
                     <div class="icon">
                         <i class="fas fa-terminal"></i>
-                        <div><a href="http://<?php echo $primary_domain; ?>:7681" target="_blank">Live Terminal</a></div>
+                        <div><a href="http://<?php echo $primary_domain; ?>:3389" target="_blank">Live Terminal (RDP)</a></div>
                     </div>
                 </div>
             </div>
