@@ -1,24 +1,14 @@
-<?php
-// Execute the bash script to get system stats
-$system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
-$stats = json_decode($system_stats, true);
-
-// Extract the data
-$cpu_load = $stats['cpu_load'];
-$mem_total = round($stats['mem_total'] / 1024, 2); // Convert to MB
-$mem_used = round($stats['mem_used'] / 1024, 2); // Convert to MB
-$mem_usage = round($stats['mem_usage'], 2);
-$disk_usage = $stats['disk_usage'];
-$rx_mb = round($stats['rx_mb'], 2);
-$tx_mb = round($stats['tx_mb'], 2);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xPanel</title>
+    <title>xPanel - Live Server Stats</title>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Add some basic styling -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,82 +16,133 @@ $tx_mb = round($stats['tx_mb'], 2);
             padding: 20px;
             text-align: center;
         }
-
         h1 {
             color: #333;
         }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
+        .chart-container {
+            width: 80%;
+            margin: auto;
         }
-
-        .card {
-            background: #fff;
-            margin: 10px;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 200px;
-            text-align: center;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 18px;
-        }
-
-        .stats {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-
-        .stats h2 {
-            color: #007bff;
+        canvas {
+            margin-bottom: 50px;
         }
     </style>
 </head>
 <body>
-    <h1>xPanel</h1>
+    <h1>xPanel - Live Server Stats</h1>
 
-    <div class="container">
-        <div class="card"><a href="file_manager.php">File Manager</a></div>
-        <div class="card"><a href="database.php">Database Management</a></div>
-        <div class="card"><a href="server_management.php">Server Management</a></div>
-        <div class="card"><a href="domain_management.php">Domain Management</a></div>
-        <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
+    <!-- CPU Load Chart -->
+    <div class="chart-container">
+        <h2>CPU Load (1, 5, 15 min)</h2>
+        <canvas id="cpuLoadChart"></canvas>
     </div>
 
-    <!-- System Info Section -->
-    <div class="stats">
-        <h2>CPU Load</h2>
-        <p><?php echo $cpu_load; ?></p>
-    </div>
-
-    <div class="stats">
+    <!-- Memory Usage Chart -->
+    <div class="chart-container">
         <h2>Memory Usage</h2>
-        <p>Total: <?php echo $mem_total; ?> MB</p>
-        <p>Used: <?php echo $mem_used; ?> MB</p>
-        <p>Usage: <?php echo $mem_usage; ?>%</p>
+        <canvas id="memoryUsageChart"></canvas>
     </div>
 
-    <div class="stats">
+    <!-- Disk Usage Chart -->
+    <div class="chart-container">
         <h2>Disk Usage</h2>
-        <p>Usage: <?php echo $disk_usage; ?></p>
+        <canvas id="diskUsageChart"></canvas>
     </div>
 
-    <div class="stats">
-        <h2>Network Traffic</h2>
-        <p>Received: <?php echo $rx_mb; ?> MB</p>
-        <p>Transmitted: <?php echo $tx_mb; ?> MB</p>
+    <!-- Network Traffic Chart -->
+    <div class="chart-container">
+        <h2>Network Traffic (MB)</h2>
+        <canvas id="networkTrafficChart"></canvas>
     </div>
 
+    <!-- JavaScript to handle the live updates -->
+    <script>
+        const updateInterval = 5000; // Update every 5 seconds
+
+        // Initialize charts
+        const cpuLoadChart = new Chart(document.getElementById('cpuLoadChart'), {
+            type: 'line',
+            data: {
+                labels: ['1 min', '5 min', '15 min'],
+                datasets: [{
+                    label: 'CPU Load',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    data: [0, 0, 0]
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        const memoryUsageChart = new Chart(document.getElementById('memoryUsageChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Used', 'Free'],
+                datasets: [{
+                    label: 'Memory Usage',
+                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
+                    data: [0, 100] // Initial data
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        const diskUsageChart = new Chart(document.getElementById('diskUsageChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Used', 'Free'],
+                datasets: [{
+                    label: 'Disk Usage',
+                    backgroundColor: ['rgba(255, 205, 86, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                    borderColor: ['rgba(255, 205, 86, 1)', 'rgba(75, 192, 192, 1)'],
+                    data: [0, 100] // Initial data
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        const networkTrafficChart = new Chart(document.getElementById('networkTrafficChart'), {
+            type: 'line',
+            data: {
+                labels: ['Received', 'Transmitted'],
+                datasets: [{
+                    label: 'Network Traffic (MB)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    data: [0, 0] // Initial data
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Function to update charts via AJAX
+        function updateCharts() {
+            fetch('/xpanel/get_live_stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Update CPU Load Chart
+                    cpuLoadChart.data.datasets[0].data = [data.cpu_load_1, data.cpu_load_5, data.cpu_load_15];
+                    cpuLoadChart.update();
+
+                    // Update Memory Usage Chart
+                    memoryUsageChart.data.datasets[0].data = [data.mem_used, data.mem_total - data.mem_used];
+                    memoryUsageChart.update();
+
+                    // Update Disk Usage Chart
+                    diskUsageChart.data.datasets[0].data = [data.disk_used, data.disk_total - data.disk_used];
+                    diskUsageChart.update();
+
+                    // Update Network Traffic Chart
+                    networkTrafficChart.data.datasets[0].data = [data.rx_mb, data.tx_mb];
+                    networkTrafficChart.update();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Update charts on page load and every 5 seconds
+        updateCharts();
+        setInterval(updateCharts, updateInterval);
+    </script>
 </body>
 </html>
