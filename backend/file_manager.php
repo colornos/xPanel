@@ -18,7 +18,7 @@
         }
         #editor {
             border: 1px solid #ccc;
-            height: 500px;
+            height: 100%;
             width: 100%;
             margin-bottom: 15px;
             transition: height 0.3s ease;
