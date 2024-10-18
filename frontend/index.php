@@ -5,7 +5,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
     $stats = json_decode($system_stats, true);
 
-    // Prepare data for the frontend
+    // 1. Get the current user
+    $current_user = get_current_user();
+
+    // 2. Get the home directory
+    $home_directory = getenv('HOME');
+
+    // 3. Get the last login IP address (parsing the output of the 'last' command)
+    $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
+    $last_login_ip = trim($last_login_info);
+
+    // 4. Get the server's IP address (this will be used as the primary domain)
+    $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
+
+    // Prepare the data to send back
     $data = [
         'cpu_load_1' => (float) $stats['cpu_load'],
         'cpu_load_5' => (float) $stats['cpu_load'],
@@ -15,7 +28,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
         'disk_total' => 100, // Placeholder, replace with actual values
         'disk_used' => (float) trim($stats['disk_usage'], '%'), // Disk usage as percentage
         'rx_mb' => (float) $stats['rx_mb'],
-        'tx_mb' => (float) $stats['tx_mb']
+        'tx_mb' => (float) $stats['tx_mb'],
+        'current_user' => $current_user,
+        'primary_domain' => $primary_domain,
+        'home_directory' => $home_directory,
+        'last_login_ip' => $last_login_ip
     ];
 
     // Return JSON response
@@ -23,6 +40,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     echo json_encode($data);
     exit;
 }
+
+// For the initial page load, run the same shell commands to populate the HTML with default values
+$system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
+$stats = json_decode($system_stats, true);
+$current_user = get_current_user();
+$home_directory = getenv('HOME');
+$last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
+$last_login_ip = trim($last_login_info);
+$primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
+
 ?>
 
 <!DOCTYPE html>
@@ -30,103 +57,237 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xPanel - Live Server Stats</title>
+    <title>xPanel - Control Panel</title>
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Add some basic styling for responsiveness and compact views -->
+    <!-- Add styling for cPanel-like interface -->
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
             background-color: #f4f4f4;
-            padding: 20px;
-            text-align: center;
         }
 
-        h1 {
-            color: #333;
+        /* Top Navigation Bar */
+        .top-bar {
+            background-color: #1a202c;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Flexbox container for responsive layout */
+        .top-bar input[type="search"] {
+            padding: 7px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .top-bar .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar .user-info button {
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Layout */
         .container {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
         }
 
-        /* Navigation cards */
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background-color: #2d3748;
+            height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h3 {
+            color: #a0aec0;
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #4a5568;
+            padding-left: 10px;
+            transition: 0.3s;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Right Sidebar (Statistics) */
+        .right-sidebar {
+            width: 300px;
+            background-color: #f7fafc;
+            padding: 20px;
+            border-left: 1px solid #e2e8f0;
+        }
+
+        /* Responsive Grid for Icons/Sections */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
         .card {
-            background: #fff;
-            margin: 10px;
+            background-color: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 150px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 18px;
+        .card img {
+            max-width: 50px;
+            margin-bottom: 10px;
         }
 
-        /* Chart containers with smaller windows and responsive layout */
+        .card a {
+            text-decoration: none;
+            color: #1a202c;
+        }
+
+        .card a:hover {
+            color: #2b6cb0;
+        }
+
         .chart-container {
             width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-        }
-
-        canvas {
             margin-bottom: 20px;
         }
 
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-            }
+        /* General Information Section */
+        .right-sidebar p {
+            margin: 5px 0;
+        }
+
+        .stats-item {
+            margin-bottom: 10px;
+        }
+
+        .stats-item strong {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <h1>xPanel - Live Server Stats</h1>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <input type="search" placeholder="Find functions quickly by typing here..." />
+        <div class="user-info">
+            <span><?php echo $current_user; ?></span>
+            <button>Logout</button>
+        </div>
+    </div>
 
-    <!-- Navigation Links -->
+    <!-- Main Container -->
     <div class="container">
-        <div class="card"><a href="file_manager.php">File Manager</a></div>
-        <div class="card"><a href="database.php">Database Management</a></div>
-        <div class="card"><a href="server_management.php">Server Management</a></div>
-        <div class="card"><a href="domain_management.php">Domain Management</a></div>
-        <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
-    </div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3>FILES</h3>
+            <a href="#">File Manager</a>
+            <a href="#">Disk Usage</a>
+            <a href="#">FTP Connections</a>
+            <a href="#">Backup</a>
 
-    <!-- CPU Load Chart -->
-    <div class="chart-container">
-        <h2>CPU Load</h2>
-        <canvas id="cpuLoadChart"></canvas>
-    </div>
+            <h3>DATABASES</h3>
+            <a href="#">phpMyAdmin</a>
+            <a href="#">MySQL Databases</a>
+        </div>
 
-    <!-- Memory Usage Chart -->
-    <div class="chart-container">
-        <h2>Memory Usage</h2>
-        <canvas id="memoryUsageChart"></canvas>
-    </div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Grid of Sections (mimicking cPanel layout) -->
+            <div class="grid">
+                <div class="card">
+                    <img src="file-icon.png" alt="File Manager Icon" />
+                    <a href="#">File Manager</a>
+                </div>
+                <div class="card">
+                    <img src="database-icon.png" alt="Database Icon" />
+                    <a href="#">Databases</a>
+                </div>
+                <div class="card">
+                    <img src="ftp-icon.png" alt="FTP Icon" />
+                    <a href="#">FTP Connections</a>
+                </div>
+                <div class="card">
+                    <img src="backup-icon.png" alt="Backup Icon" />
+                    <a href="#">Backup</a>
+                </div>
+            </div>
 
-    <!-- Disk Usage Chart -->
-    <div class="chart-container">
-        <h2>Disk Usage</h2>
-        <canvas id="diskUsageChart"></canvas>
-    </div>
+            <!-- Charts (for live data) -->
+            <div class="chart-container">
+                <h3>CPU Load</h3>
+                <canvas id="cpuLoadChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Memory Usage</h3>
+                <canvas id="memoryUsageChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Disk Usage</h3>
+                <canvas id="diskUsageChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Network Traffic</h3>
+                <canvas id="networkTrafficChart"></canvas>
+            </div>
+        </div>
 
-    <!-- Network Traffic Chart -->
-    <div class="chart-container">
-        <h2>Network Traffic</h2>
-        <canvas id="networkTrafficChart"></canvas>
+        <!-- Right Sidebar (General Info & Stats) -->
+        <div class="right-sidebar">
+            <h3>General Information</h3>
+            <p><strong>Current User:</strong> <?php echo $current_user; ?></p>
+            <p><strong>Primary Domain (Server IP):</strong> <?php echo $primary_domain; ?></p>
+            <p><strong>Home Directory:</strong> <?php echo $home_directory; ?></p>
+            <p><strong>Last Login IP:</strong> <?php echo $last_login_ip; ?></p>
+
+            <h3>Statistics</h3>
+            <div class="stats-item">
+                <strong>CPU Load:</strong>
+                <span><?php echo $stats['cpu_load']; ?></span>
+            </div>
+            <div class="stats-item">
+                <strong>Memory Usage:</strong>
+                <span><?php echo round($stats['mem_used'] / 1024, 2) . ' MB / ' . round($stats['mem_total'] / 1024, 2) . ' MB'; ?></span>
+            </div>
+            <div class="stats-item">
+                <strong>Disk Usage:</strong>
+                <span><?php echo $stats['disk_usage']; ?>%</span>
+            </div>
+            <div class="stats-item">
+                <strong>Network Traffic:</strong>
+                <span><?php echo round($stats['rx_mb'], 2) . ' MB received, ' . round($stats['tx_mb'], 2) . ' MB transmitted'; ?></span>
+            </div>
+        </div>
     </div>
 
     <!-- JavaScript to handle the live updates using Chart.js -->
@@ -142,7 +303,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
                     label: 'CPU Load',
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
-                    data: [0, 0, 0]
+                    data: [<?php echo $stats['cpu_load']; ?>, 0, 0]
                 }]
             },
             options: { responsive: true }
@@ -156,7 +317,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
                     label: 'Memory Usage',
                     backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(75, 192, 192, 0.2)'],
                     borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
-                    data: [0, 100] // Initial data
+                    data: [<?php echo $stats['mem_used']; ?>, <?php echo $stats['mem_total'] - $stats['mem_used']; ?>]
                 }]
             },
             options: { responsive: true }
@@ -170,7 +331,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
                     label: 'Disk Usage',
                     backgroundColor: ['rgba(255, 205, 86, 0.2)', 'rgba(75, 192, 192, 0.2)'],
                     borderColor: ['rgba(255, 205, 86, 1)', 'rgba(75, 192, 192, 1)'],
-                    data: [0, 100] // Initial data
+                    data: [<?php echo $stats['disk_used']; ?>, <?php echo 100 - $stats['disk_used']; ?>]
                 }]
             },
             options: { responsive: true }
@@ -184,7 +345,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
                     label: 'Network Traffic (MB)',
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',
                     borderColor: 'rgba(153, 102, 255, 1)',
-                    data: [0, 0] // Initial data
+                    data: [<?php echo $stats['rx_mb']; ?>, <?php echo $stats['tx_mb']; ?>]
                 }]
             },
             options: { responsive: true }
@@ -192,7 +353,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
 
         // Function to update charts via AJAX
         function updateCharts() {
-            fetch('?action=get_stats') // Same script for fetching live stats
+            fetch('?action=get_stats')
                 .then(response => response.json())
                 .then(data => {
                     // Update CPU Load Chart
@@ -210,6 +371,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
                     // Update Network Traffic Chart
                     networkTrafficChart.data.datasets[0].data = [data.rx_mb, data.tx_mb];
                     networkTrafficChart.update();
+
+                    // Update live data in the General Info sidebar
+                    document.querySelector('.right-sidebar [data-key="current_user"]').textContent = data.current_user;
+                    document.querySelector('.right-sidebar [data-key="primary_domain"]').textContent = data.primary_domain;
+                    document.querySelector('.right-sidebar [data-key="home_directory"]').textContent = data.home_directory;
+                    document.querySelector('.right-sidebar [data-key="last_login_ip"]').textContent = data.last_login_ip;
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
