@@ -1,44 +1,27 @@
 <?php
 
-// Check if sys_getloadavg() is available, else use /proc/loadavg as a fallback
-if (function_exists('sys_getloadavg')) {
-    $cpu_load = sys_getloadavg();
-    $loadavg_1min = $cpu_load[0];
-    $loadavg_5min = $cpu_load[1];
-    $loadavg_15min = $cpu_load[2];
-} else {
-    $loadavg = file_get_contents("/proc/loadavg");
-    $loadavg_values = explode(" ", $loadavg);
-    $loadavg_1min = $loadavg_values[0];
-    $loadavg_5min = $loadavg_values[1];
-    $loadavg_15min = $loadavg_values[2];
-}
+// Get CPU Load using 'uptime' command
+$cpu_load = shell_exec('uptime');
+preg_match('/load average: ([0-9.]+), ([0-9.]+), ([0-9.]+)/', $cpu_load, $loadavg_matches);
+$loadavg_1min = $loadavg_matches[1];
+$loadavg_5min = $loadavg_matches[2];
+$loadavg_15min = $loadavg_matches[3];
 
-// Get Memory usage
-$mem_info = file_get_contents("/proc/meminfo");
-preg_match("/MemTotal:\s+(\d+) kB/", $mem_info, $matches);
-$mem_total = $matches[1];
-preg_match("/MemFree:\s+(\d+) kB/", $mem_info, $matches);
-$mem_free = $matches[1];
-$mem_used = $mem_total - $mem_free;
+// Get Memory Usage using 'free' command
+$memory_info = shell_exec('free -m');
+preg_match('/Mem:\s+(\d+)\s+(\d+)/', $memory_info, $mem_matches);
+$mem_total = $mem_matches[1];
+$mem_used = $mem_matches[2];
 $mem_usage = round(($mem_used / $mem_total) * 100, 2);
 
-// Get Disk usage
-$disk_total = disk_total_space("/");
-$disk_free = disk_free_space("/");
-$disk_used = $disk_total - $disk_free;
-$disk_usage = round(($disk_used / $disk_total) * 100, 2);
+// Get Disk Usage using 'df' command
+$disk_info = shell_exec('df -h /');
+preg_match('/\d+%\s+/', $disk_info, $disk_matches);
+$disk_usage = trim($disk_matches[0]);
 
-// Get Network traffic (RX/TX bytes)
-$network_interfaces = file("/proc/net/dev");
-$rx_bytes = 0;
-$tx_bytes = 0;
-foreach ($network_interfaces as $interface) {
-    if (preg_match("/^\s*([^:]+):\s*(\d+)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)/", $interface, $matches)) {
-        $rx_bytes += $matches[2];
-        $tx_bytes += $matches[3];
-    }
-}
+// Get Network Traffic (RX and TX) from 'ifconfig' or 'ip' command
+$rx_bytes = shell_exec("cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/statistics/rx_bytes");
+$tx_bytes = shell_exec("cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/statistics/tx_bytes");
 
 // Convert bytes to MB
 $rx_mb = round($rx_bytes / 1024 / 1024, 2);
@@ -122,16 +105,14 @@ $tx_mb = round($tx_bytes / 1024 / 1024, 2);
 
     <div class="stats">
         <h2>Memory Usage</h2>
-        <p>Total: <?php echo round($mem_total / 1024); ?> MB</p>
-        <p>Used: <?php echo round($mem_used / 1024); ?> MB</p>
+        <p>Total: <?php echo $mem_total; ?> MB</p>
+        <p>Used: <?php echo $mem_used; ?> MB</p>
         <p>Usage: <?php echo $mem_usage; ?>%</p>
     </div>
 
     <div class="stats">
         <h2>Disk Usage</h2>
-        <p>Total: <?php echo round($disk_total / 1024 / 1024 / 1024, 2); ?> GB</p>
-        <p>Used: <?php echo round($disk_used / 1024 / 1024 / 1024, 2); ?> GB</p>
-        <p>Usage: <?php echo $disk_usage; ?>%</p>
+        <p>Usage: <?php echo $disk_usage; ?></p>
     </div>
 
     <div class="stats">
