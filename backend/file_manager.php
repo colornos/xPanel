@@ -118,23 +118,6 @@
 
 <!-- BEGIN: Content-->
 <div class="app-content content">
-    <div class="content-header row">
-        <div class="content-header-light col-12">
-            <div class="row">
-                <div class="content-header-left col-md-9 col-12 mb-2">
-                    <h3 class="content-header-title">File Manager</h3>
-                    <div class="row breadcrumbs-top">
-                        <div class="breadcrumb-wrapper col-12">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                                <li class="breadcrumb-item active">File Manager</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="content-wrapper">
         <div class="container">
             <div class="main-content">
