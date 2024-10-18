@@ -18,7 +18,21 @@ sudo systemctl restart apache2
 # Get the server's IP address (this will be used as the domain for local testing)
 IP_ADDRESS="192.168.0.19"
 
-# Set up MySQL database
+# Fetch the Ubuntu username
+UBUNTU_USER=$(whoami)
+echo "Detected Ubuntu user: $UBUNTU_USER"
+
+# Prompt for the Ubuntu user's password (to use it for MySQL as well)
+read -sp "Enter the password for MySQL user (same as Ubuntu user $UBUNTU_USER): " MYSQL_PASSWORD
+echo
+
+# Set up MySQL user with the same credentials as the Ubuntu user
+echo "Setting up MySQL user with Ubuntu credentials..."
+sudo mysql -e "CREATE USER '$UBUNTU_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$UBUNTU_USER'@'localhost';"
+sudo mysql -e "FLUSH PRIVILEGES;"
+
+# Set up MySQL database for xPanel
 echo "Setting up the MySQL database..."
 sudo mysql -e "CREATE DATABASE xpanel_db;"
 sudo mysql -e "CREATE USER 'xpanel_user'@'localhost' IDENTIFIED BY 'password';"
