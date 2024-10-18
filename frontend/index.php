@@ -92,6 +92,24 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            padding: 15px;
+        }
+        .icon {
+            text-align: center;
+        }
+        .icon img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 5px;
+        }
+        .icon div {
+            font-size: 14px;
+            font-weight: 500;
+        }
         .sidebar {
             flex: 1;
             background-color: #fff;
@@ -168,6 +186,75 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     </header>
 
     <div class="container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Files Section -->
+            <div class="section">
+                <div class="section-header">Files</div>
+                <div class="icons-grid">
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="File Manager">
+                        <div>File Manager</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Images">
+                        <div>Images</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
+                        <div>FTP Accounts</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
+                        <div>FTP Connections</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
+                        <div>Directory Privacy</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
+                        <div>Disk Usage</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Backup">
+                        <div>Backup</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
+                        <div>Backup Wizard</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Databases Section -->
+            <div class="section">
+                <div class="section-header">Databases</div>
+                <div class="icons-grid">
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
+                        <div>phpMyAdmin</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
+                        <div>MySQL Databases</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
+                        <div>MySQL Database Wizard</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
+                        <div>Remote MySQL</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
+                        <div>PostgreSQL Databases</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Sidebar with Live Statistics -->
         <div class="sidebar">
             <div class="sidebar-header">General Information</div>
@@ -197,7 +284,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <?php echo $stats['disk_used']; ?>% used
                     <br>
                     <strong><?php echo $stats['disk_used']; ?>%</strong> 
-                    <!-- Adjust this based on actual available/used data -->
                 </div>
                 <div class="progress-bar">
                     <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>%;"></span>
