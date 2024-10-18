@@ -31,13 +31,8 @@
             z-index: 9999;
             margin: 0;
         }
+        /* Keep the buttons always visible at the top right in regular and fullscreen mode */
         #button-group {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-        }
-        /* Keep the buttons visible in fullscreen mode at the top right */
-        .fullscreen-buttons {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -81,12 +76,8 @@
                 <div id="editor"><?php echo htmlspecialchars($file_content); ?></div>
                 <textarea name="file_content" id="file_content" style="display:none;"><?php echo htmlspecialchars($file_content); ?></textarea>
                 <div id="button-group">
-                    <button type="submit" class="btn btn-primary me-2">Save File</button>
-                    <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
-                </div>
-                <div id="fullscreen-buttons" class="fullscreen-buttons" style="display:none;">
                     <button type="submit" class="btn btn-primary">Save File</button>
-                    <button id="exit-fullscreen-btn" type="button" class="btn btn-secondary">Exit Fullscreen</button>
+                    <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
                 </div>
             </form>
 
@@ -117,24 +108,12 @@
                     var editorElement = document.getElementById('editor');
                     if (isFullscreen) {
                         editorElement.classList.remove('fullscreen');
-                        document.getElementById('fullscreen-buttons').style.display = 'none';
                         this.textContent = "Toggle Fullscreen";
                     } else {
                         editorElement.classList.add('fullscreen');
-                        document.getElementById('fullscreen-buttons').style.display = 'flex';
                         this.textContent = "Exit Fullscreen";
                     }
                     isFullscreen = !isFullscreen;
-                    editor.resize();
-                });
-
-                // Exit fullscreen mode
-                document.getElementById('exit-fullscreen-btn').addEventListener('click', function() {
-                    var editorElement = document.getElementById('editor');
-                    editorElement.classList.remove('fullscreen');
-                    document.getElementById('fullscreen-buttons').style.display = 'none';
-                    document.getElementById('fullscreen-btn').textContent = "Toggle Fullscreen";
-                    isFullscreen = false;
                     editor.resize();
                 });
             </script>
