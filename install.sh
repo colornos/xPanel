@@ -85,6 +85,20 @@ sudo certbot --apache -d $IP_ADDRESS --register-unsafely-without-email --non-int
 echo "Configuring sudoers to allow www-data to run get_system_stats.sh without a password..."
 sudo bash -c "echo 'www-data ALL=(ALL) NOPASSWD: /var/www/html/xpanel/get_system_stats.sh' >> /etc/sudoers"
 
+# Install TTYD for live terminal
+echo "Installing TTYD (Web-Based Terminal)..."
+sudo apt install build-essential cmake git libjson-c-dev libwebsockets-dev libssl-dev -y
+git clone https://github.com/tsl0922/ttyd.git
+cd ttyd
+mkdir build && cd build
+cmake ..
+make && sudo make install
+
+# Start TTYD on port 7681 (auto-start on reboot)
+echo "Starting TTYD on port 7681..."
+sudo bash -c "echo '@reboot root ttyd -p 7681 bash' >> /etc/crontab"
+sudo ttyd -p 7681 bash &
+
 # Create a shortcut command to open xPanel in the default browser using the IP address
 echo "Creating a command to easily open xPanel..."
 sudo bash -c "echo 'xdg-open https://$IP_ADDRESS/xpanel' > /usr/local/bin/xpanel"
