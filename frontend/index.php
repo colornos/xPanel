@@ -65,32 +65,47 @@
     </div>
 
     <!-- System Info Section -->
-    <div class="stats">
-        <h2>CPU Load</h2>
-        <p>1 Minute: <?php echo $cpu_load[0]; ?></p>
-        <p>5 Minutes: <?php echo $cpu_load[1]; ?></p>
-        <p>15 Minutes: <?php echo $cpu_load[2]; ?></p>
-    </div>
+<?php
+// Get CPU load using sudo
+$cpu_load = sys_getloadavg();
 
-    <div class="stats">
-        <h2>Memory Usage</h2>
-        <p>Total: <?php echo round($mem_total / 1024); ?> MB</p>
-        <p>Used: <?php echo round($mem_used / 1024); ?> MB</p>
-        <p>Usage: <?php echo $mem_usage; ?>%</p>
-    </div>
+// Get Memory usage using sudo
+$mem_info = shell_exec('sudo cat /proc/meminfo');
+preg_match("/MemTotal:\s+(\d+) kB/", $mem_info, $matches);
+$mem_total = $matches[1];
+preg_match("/MemFree:\s+(\d+) kB/", $mem_info, $matches);
+$mem_free = $matches[1];
+$mem_used = $mem_total - $mem_free;
+$mem_usage = round(($mem_used / $mem_total) * 100, 2);
 
-    <div class="stats">
-        <h2>Disk Usage</h2>
-        <p>Total: <?php echo round($disk_total / 1024 / 1024 / 1024, 2); ?> GB</p>
-        <p>Used: <?php echo round($disk_used / 1024 / 1024 / 1024, 2); ?> GB</p>
-        <p>Usage: <?php echo $disk_usage; ?>%</p>
-    </div>
+// Get Disk usage (using PHP built-in functions)
+$disk_total = disk_total_space("/");
+$disk_free = disk_free_space("/");
+$disk_used = $disk_total - $disk_free;
+$disk_usage = round(($disk_used / $disk_total) * 100, 2);
 
-    <div class="stats">
-        <h2>Network Traffic</h2>
-        <p>Received: <?php echo $rx_mb; ?> MB</p>
-        <p>Transmitted: <?php echo $tx_mb; ?> MB</p>
-    </div>
+// Display the information
+?>
+<div class="stats">
+    <h2>CPU Load</h2>
+    <p>1 Minute: <?php echo $cpu_load[0]; ?></p>
+    <p>5 Minutes: <?php echo $cpu_load[1]; ?></p>
+    <p>15 Minutes: <?php echo $cpu_load[2]; ?></p>
+</div>
+
+<div class="stats">
+    <h2>Memory Usage</h2>
+    <p>Total: <?php echo round($mem_total / 1024); ?> MB</p>
+    <p>Used: <?php echo round($mem_used / 1024); ?> MB</p>
+    <p>Usage: <?php echo $mem_usage; ?>%</p>
+</div>
+
+<div class="stats">
+    <h2>Disk Usage</h2>
+    <p>Total: <?php echo round($disk_total / 1024 / 1024 / 1024, 2); ?> GB</p>
+    <p>Used: <?php echo round($disk_used / 1024 / 1024 / 1024, 2); ?> GB</p>
+    <p>Usage: <?php echo $disk_usage; ?>%</p>
+</div>
 
 </body>
 </html>
