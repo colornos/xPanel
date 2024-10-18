@@ -191,6 +191,29 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
     <!-- BEGIN: Content-->
     <div class="app-content content">
+        <div class="content-header row">
+            <div class="content-header-light col-12">
+                <div class="row">
+                    <div class="content-header-left col-md-9 col-12 mb-2">
+                        <h3 class="content-header-title">Main Page</h3>
+                        <div class="row breadcrumbs-top">
+                            <div class="breadcrumb-wrapper col-12">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#">Next folder</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Next folder
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="content-overlay"></div>
         <div class="content-wrapper">
             <div class="container">
                 <!-- Main Content -->
