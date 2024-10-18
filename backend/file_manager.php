@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive File Manager</title>
+    <title>Responsive File Manager with Fullscreen Editor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -21,13 +21,29 @@
             height: 500px;
             width: 100%;
             margin-bottom: 15px;
+            transition: height 0.3s ease;
+        }
+        .fullscreen {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            margin: 0;
+        }
+        #fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10000;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 class="my-4">Responsive File Manager</h1>
+    <h1 class="my-4">Responsive File Manager with Fullscreen Editor</h1>
 
     <?php
     $dir = "/var/www/html/";
@@ -59,6 +75,7 @@
                 <textarea name="file_content" id="file_content" style="display:none;"><?php echo htmlspecialchars($file_content); ?></textarea>
                 <button type="submit" class="btn btn-primary mt-3">Save File</button>
             </form>
+            <button id="fullscreen-btn" class="btn btn-secondary">Toggle Fullscreen</button>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
             <script>
@@ -66,8 +83,24 @@
                 editor.setTheme("ace/theme/monokai");
                 editor.session.setMode("ace/mode/php");
 
+                // Update hidden textarea on form submit
                 document.querySelector('form').addEventListener('submit', function () {
                     document.getElementById('file_content').value = editor.getValue();
+                });
+
+                // Toggle fullscreen mode
+                var isFullscreen = false;
+                document.getElementById('fullscreen-btn').addEventListener('click', function() {
+                    var editorElement = document.getElementById('editor');
+                    if (isFullscreen) {
+                        editorElement.classList.remove('fullscreen');
+                        this.textContent = "Toggle Fullscreen";
+                    } else {
+                        editorElement.classList.add('fullscreen');
+                        this.textContent = "Exit Fullscreen";
+                    }
+                    isFullscreen = !isFullscreen;
+                    editor.resize();
                 });
             </script>
 
