@@ -31,11 +31,19 @@
             z-index: 9999;
             margin: 0;
         }
-        #fullscreen-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        #button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        /* Keep the buttons visible in fullscreen mode */
+        .fullscreen-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             z-index: 10000;
+            display: flex;
+            gap: 10px;
         }
     </style>
 </head>
@@ -72,9 +80,15 @@
                 <input type="hidden" name="file_path" value="<?php echo htmlspecialchars($file_path); ?>">
                 <div id="editor"><?php echo htmlspecialchars($file_content); ?></div>
                 <textarea name="file_content" id="file_content" style="display:none;"><?php echo htmlspecialchars($file_content); ?></textarea>
-                <button type="submit" class="btn btn-primary mt-3">Save File</button>
+                <div id="button-group">
+                    <button type="submit" class="btn btn-primary me-2">Save File</button>
+                    <button id="fullscreen-btn" type="button" class="btn btn-secondary">Toggle Fullscreen</button>
+                </div>
+                <div id="fullscreen-buttons" class="fullscreen-buttons" style="display:none;">
+                    <button type="submit" class="btn btn-primary">Save File</button>
+                    <button id="exit-fullscreen-btn" type="button" class="btn btn-secondary">Exit Fullscreen</button>
+                </div>
             </form>
-            <button id="fullscreen-btn" class="btn btn-secondary">Toggle Fullscreen</button>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
             <script>
@@ -103,12 +117,24 @@
                     var editorElement = document.getElementById('editor');
                     if (isFullscreen) {
                         editorElement.classList.remove('fullscreen');
+                        document.getElementById('fullscreen-buttons').style.display = 'none';
                         this.textContent = "Toggle Fullscreen";
                     } else {
                         editorElement.classList.add('fullscreen');
+                        document.getElementById('fullscreen-buttons').style.display = 'flex';
                         this.textContent = "Exit Fullscreen";
                     }
                     isFullscreen = !isFullscreen;
+                    editor.resize();
+                });
+
+                // Exit fullscreen mode
+                document.getElementById('exit-fullscreen-btn').addEventListener('click', function() {
+                    var editorElement = document.getElementById('editor');
+                    editorElement.classList.remove('fullscreen');
+                    document.getElementById('fullscreen-buttons').style.display = 'none';
+                    document.getElementById('fullscreen-btn').textContent = "Toggle Fullscreen";
+                    isFullscreen = false;
                     editor.resize();
                 });
             </script>
