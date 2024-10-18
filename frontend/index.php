@@ -201,14 +201,29 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <h3 class="content-header-title">x</h3>
                         <div class="row breadcrumbs-top">
                             <div class="breadcrumb-wrapper col-12">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.php">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="#">Sub folder</a>
-                                    </li>
-                                    <li class="breadcrumb-item active">Next sub folder
-                                    </li>
-                                </ol>
+<?php
+// Get the current directory
+$current_directory = getcwd();
+$base_directory = '/var/www/html/xpanel'; // Adjust this based on your server's base directory
+$relative_path = str_replace($base_directory, '', $current_directory);
+$directory_parts = array_filter(explode('/', $relative_path));
+
+// Breadcrumb generation
+echo '<ol class="breadcrumb">';
+echo '<li class="breadcrumb-item"><a href="index.php">Home</a></li>'; // Always show Home
+
+$path_accumulation = '';
+foreach ($directory_parts as $part) {
+    $path_accumulation .= '/' . $part;
+    if ($part !== end($directory_parts)) {
+        echo '<li class="breadcrumb-item"><a href="' . $path_accumulation . '">' . ucfirst($part) . '</a></li>';
+    } else {
+        echo '<li class="breadcrumb-item active">' . ucfirst($part) . '</li>'; // Active folder (current directory)
+    }
+}
+echo '</ol>';
+?>
+
                             </div>
                         </div>
                     </div>
