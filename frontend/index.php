@@ -1,32 +1,16 @@
 <?php
+// Execute the bash script to get system stats
+$system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
+$stats = json_decode($system_stats, true);
 
-// Get CPU Load using 'uptime' command
-$cpu_load = shell_exec('uptime');
-preg_match('/load average: ([0-9.]+), ([0-9.]+), ([0-9.]+)/', $cpu_load, $loadavg_matches);
-$loadavg_1min = $loadavg_matches[1];
-$loadavg_5min = $loadavg_matches[2];
-$loadavg_15min = $loadavg_matches[3];
-
-// Get Memory Usage using 'free' command
-$memory_info = shell_exec('free -m');
-preg_match('/Mem:\s+(\d+)\s+(\d+)/', $memory_info, $mem_matches);
-$mem_total = $mem_matches[1];
-$mem_used = $mem_matches[2];
-$mem_usage = round(($mem_used / $mem_total) * 100, 2);
-
-// Get Disk Usage using 'df' command
-$disk_info = shell_exec('df -h /');
-preg_match('/\d+%\s+/', $disk_info, $disk_matches);
-$disk_usage = trim($disk_matches[0]);
-
-// Get Network Traffic (RX and TX) from 'ifconfig' or 'ip' command
-$rx_bytes = shell_exec("cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/statistics/rx_bytes");
-$tx_bytes = shell_exec("cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/statistics/tx_bytes");
-
-// Convert bytes to MB
-$rx_mb = round($rx_bytes / 1024 / 1024, 2);
-$tx_mb = round($tx_bytes / 1024 / 1024, 2);
-
+// Extract the data
+$cpu_load = $stats['cpu_load'];
+$mem_total = round($stats['mem_total'] / 1024, 2); // Convert to MB
+$mem_used = round($stats['mem_used'] / 1024, 2); // Convert to MB
+$mem_usage = round($stats['mem_usage'], 2);
+$disk_usage = $stats['disk_usage'];
+$rx_mb = round($stats['rx_mb'], 2);
+$tx_mb = round($stats['tx_mb'], 2);
 ?>
 
 <!DOCTYPE html>
@@ -98,9 +82,7 @@ $tx_mb = round($tx_bytes / 1024 / 1024, 2);
     <!-- System Info Section -->
     <div class="stats">
         <h2>CPU Load</h2>
-        <p>1 Minute: <?php echo $loadavg_1min; ?></p>
-        <p>5 Minutes: <?php echo $loadavg_5min; ?></p>
-        <p>15 Minutes: <?php echo $loadavg_15min; ?></p>
+        <p><?php echo $cpu_load; ?></p>
     </div>
 
     <div class="stats">
