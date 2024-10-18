@@ -6,9 +6,11 @@
     <title>Responsive File Manager with Fullscreen Editor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
+            height: 100%;
+            overflow: hidden;
         }
         .file-list ul {
             padding-left: 0;
@@ -32,6 +34,7 @@
             z-index: 9999;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
         .fullscreen #editor {
             height: 100vh !important;
@@ -47,17 +50,11 @@
             display: flex;
             gap: 10px;
         }
-        /* Ensure no padding/margin in fullscreen */
-        .fullscreen-body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container-fluid">
     <h1 class="my-4">Responsive File Manager with Fullscreen Editor</h1>
 
     <?php
@@ -121,11 +118,11 @@
                     var bodyElement = document.body;
                     var editorElement = document.getElementById('editor');
                     if (isFullscreen) {
-                        bodyElement.classList.remove('fullscreen-body');
+                        bodyElement.classList.remove('fullscreen');
                         editorElement.classList.remove('fullscreen');
                         this.textContent = "Toggle Fullscreen";
                     } else {
-                        bodyElement.classList.add('fullscreen-body');
+                        bodyElement.classList.add('fullscreen');
                         editorElement.classList.add('fullscreen');
                         this.textContent = "Exit Fullscreen";
                     }
