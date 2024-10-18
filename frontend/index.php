@@ -8,7 +8,7 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Add some basic styling -->
+    <!-- Add some basic styling for responsiveness and compact views -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,24 +16,71 @@
             padding: 20px;
             text-align: center;
         }
+
         h1 {
             color: #333;
         }
-        .chart-container {
-            width: 80%;
-            margin: auto;
+
+        /* Flexbox container for responsive layout */
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
+
+        /* Navigation cards */
+        .card {
+            background: #fff;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 150px;
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        /* Chart containers with smaller windows and responsive layout */
+        .chart-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
         canvas {
-            margin-bottom: 50px;
+            margin-bottom: 20px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
     <h1>xPanel - Live Server Stats</h1>
 
+    <!-- Navigation Links -->
+    <div class="container">
+        <div class="card"><a href="file_manager.php">File Manager</a></div>
+        <div class="card"><a href="database.php">Database Management</a></div>
+        <div class="card"><a href="server_management.php">Server Management</a></div>
+        <div class="card"><a href="domain_management.php">Domain Management</a></div>
+        <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
+    </div>
+
     <!-- CPU Load Chart -->
     <div class="chart-container">
-        <h2>CPU Load (1, 5, 15 min)</h2>
+        <h2>CPU Load</h2>
         <canvas id="cpuLoadChart"></canvas>
     </div>
 
@@ -51,11 +98,11 @@
 
     <!-- Network Traffic Chart -->
     <div class="chart-container">
-        <h2>Network Traffic (MB)</h2>
+        <h2>Network Traffic</h2>
         <canvas id="networkTrafficChart"></canvas>
     </div>
 
-    <!-- JavaScript to handle the live updates -->
+    <!-- JavaScript to handle the live updates using Chart.js -->
     <script>
         const updateInterval = 5000; // Update every 5 seconds
 
