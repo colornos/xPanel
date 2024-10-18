@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xPanel - File Manager</title>
     <link rel="apple-touch-icon" href="app-assets/images/ico/apple-icon-120.png">
@@ -35,12 +36,12 @@
         /* Custom styling for File Manager */
         .container {
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap;
             padding: 20px;
         }
         .main-content {
-            flex: 3;
-            margin-right: 20px;
+            flex: 1;
+            margin-right: 1rem;
         }
         .section {
             background-color: #fff;
@@ -72,17 +73,40 @@
             position: fixed !important;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100vw;
             height: 100vh;
             z-index: 9999;
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background: #fff;
         }
         .fullscreen #editor {
             height: 100vh !important;
             width: 100vw !important;
             border: none;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.25rem;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.25rem;
+        }
+        .breadcrumb {
+            max-width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -129,12 +153,13 @@
                         $dir = "/var/www/html/";
 
                         if (isset($_GET['dir'])) {
-                            $dir = $_GET['dir'];
+                            $dir = realpath($_GET['dir']); // Sanitize path
                         }
 
                         // Handle file save operation
                         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['file_path'], $_POST['file_content'])) {
-                            if (file_put_contents($_POST['file_path'], $_POST['file_content']) !== false) {
+                            $file_path = realpath($_POST['file_path']); // Sanitize file path
+                            if ($file_path && file_put_contents($file_path, $_POST['file_content']) !== false) {
                                 echo "<div class='alert alert-success'>File saved successfully!</div>";
                             } else {
                                 echo "<div class='alert alert-danger'>Error saving the file!</div>";
@@ -143,9 +168,9 @@
 
                         // If a specific file is selected for editing
                         if (isset($_GET['file'])) {
-                            $file_path = $_GET['file'];
+                            $file_path = realpath($_GET['file']); // Sanitize file path
 
-                            if (file_exists($file_path)) {
+                            if ($file_path && file_exists($file_path)) {
                                 $file_content = file_get_contents($file_path);
                                 ?>
                                 <h2>Editing: <?php echo htmlspecialchars($file_path); ?></h2>
