@@ -30,6 +30,7 @@
             height: 100vh;
             z-index: 9999;
             margin: 0;
+            padding: 0;
         }
         /* Keep the buttons always visible at the top right in regular and fullscreen mode */
         #button-group {
@@ -39,6 +40,10 @@
             z-index: 10000;
             display: flex;
             gap: 10px;
+        }
+        /* Ensure fullscreen editor uses the entire viewport height */
+        .fullscreen #editor {
+            height: calc(100vh - 60px); /* Subtract height for the button bar */
         }
     </style>
 </head>
@@ -107,9 +112,11 @@
                 document.getElementById('fullscreen-btn').addEventListener('click', function() {
                     var editorElement = document.getElementById('editor');
                     if (isFullscreen) {
+                        document.body.classList.remove('fullscreen');
                         editorElement.classList.remove('fullscreen');
                         this.textContent = "Toggle Fullscreen";
                     } else {
+                        document.body.classList.add('fullscreen');
                         editorElement.classList.add('fullscreen');
                         this.textContent = "Exit Fullscreen";
                     }
