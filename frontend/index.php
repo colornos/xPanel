@@ -18,10 +18,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
         'cpu_load_15' => (float) $stats['cpu_load'],
         'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
         'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
-        'disk_total' => 100, // Placeholder
+        'disk_total' => 100, // Placeholder for total disk space
         'disk_used' => (float) trim($stats['disk_usage'], '%'), // Disk usage as percentage
-        'rx_mb' => (float) $stats['rx_mb'],
-        'tx_mb' => (float) $stats['tx_mb'],
+        'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
+        'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
         'current_user' => $current_user,
         'primary_domain' => $primary_domain,
         'home_directory' => $home_directory,
@@ -57,7 +57,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             padding: 0;
         }
         header {
-            background-color: #2a3f54; /* Dark blue header color */
+            background-color: #2a3f54;
             color: #fff;
             padding: 15px 20px;
             display: flex;
@@ -85,7 +85,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
         .section-header {
-            background-color: #0056A4; /* Blue background for section headers */
+            background-color: #0056A4;
             color: #fff;
             padding: 10px 15px;
             font-size: 16px;
@@ -120,7 +120,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
         .sidebar-header {
-            background-color: #0056A4; /* Blue background for sidebar headers */
+            background-color: #0056A4;
             color: #fff;
             padding: 10px 15px;
             font-size: 14px;
@@ -163,12 +163,12 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             top: 0;
         }
         .disk-usage {
-            width: <?php echo $stats['disk_used']; ?>%; /* Dynamically fill the disk usage */
-            background-color: #FF6C6C; /* Red for high disk usage */
+            width: <?php echo $stats['disk_used']; ?>%;
+            background-color: #FF6C6C;
         }
         .mysql-usage {
-            width: <?php echo 30; ?>%; /* Placeholder for MySQL usage */
-            background-color: #4CAF50; /* Green for MySQL usage */
+            width: <?php echo 30; ?>%;
+            background-color: #4CAF50;
         }
         .progress-label .edit-icon {
             float: right;
@@ -259,43 +259,65 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="sidebar-header">General Information</div>
             <div class="stat">
                 <div class="stat-label">Current User:</div>
-                <div class="stat-value"><?php echo $current_user; ?></div>
+                <div class="stat-value" data-key="current_user"><?php echo $current_user; ?></div>
             </div>
             <div class="stat">
                 <div class="stat-label">Primary Domain (Server IP):</div>
-                <div class="stat-value"><?php echo $primary_domain; ?></div>
+                <div class="stat-value" data-key="primary_domain"><?php echo $primary_domain; ?></div>
             </div>
             <div class="stat">
                 <div class="stat-label">Home Directory:</div>
-                <div class="stat-value"><?php echo $home_directory; ?></div>
+                <div class="stat-value" data-key="home_directory"><?php echo $home_directory; ?></div>
             </div>
             <div class="stat">
                 <div class="stat-label">Last Login IP:</div>
-                <div class="stat-value"><?php echo $last_login_ip; ?></div>
+                <div class="stat-value" data-key="last_login_ip"><?php echo $last_login_ip; ?></div>
             </div>
 
             <div class="sidebar-header">Statistics</div>
+            <!-- CPU Load -->
+            <div class="stat">
+                <div class="stat-label">CPU Load (1 min):</div>
+                <div class="stat-value" data-key="cpu_load_1"><?php echo $stats['cpu_load']; ?></div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">CPU Load (5 min):</div>
+                <div class="stat-value" data-key="cpu_load_5">0.0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">CPU Load (15 min):</div>
+                <div class="stat-value" data-key="cpu_load_15">0.0</div>
+            </div>
+
+            <!-- Memory Usage -->
+            <div class="stat">
+                <div class="stat-label">Memory Total (MB):</div>
+                <div class="stat-value" data-key="mem_total"><?php echo round($stats['mem_total']); ?></div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Memory Used (MB):</div>
+                <div class="stat-value" data-key="mem_used"><?php echo round($stats['mem_used']); ?></div>
+            </div>
+
             <!-- Disk Usage Progress Bar -->
             <div class="progress-container">
                 <div class="stat-title">Disk Usage</div>
                 <div class="progress-label">
                     <?php echo $stats['disk_used']; ?>% used
-                    <span class="edit-icon">🔧</span>
                 </div>
                 <div class="progress-bar">
                     <span class="disk-usage"></span>
                 </div>
             </div>
 
-            <!-- MySQL Usage Progress Bar -->
-            <div class="progress-container">
-                <div class="stat-title">MySQL® Disk Usage</div>
-                <div class="progress-label">
-                    30% used
-                </div>
-                <div class="progress-bar">
-                    <span class="mysql-usage"></span>
-                </div>
+            <!-- Network Traffic -->
+            <div class="stat">
+                <div class="stat-label">Network Received (MB):</div>
+                <div class="stat-value" data-key="rx_mb"><?php echo $stats['rx_mb']; ?></div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Network Transmitted (MB):</div>
+                <div class="stat-value" data-key="tx_mb"><?php echo $stats['tx_mb']; ?></div>
             </div>
         </div>
     </div>
@@ -312,9 +334,21 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     document.querySelector('.stat-value[data-key="home_directory"]').textContent = data.home_directory;
                     document.querySelector('.stat-value[data-key="last_login_ip"]').textContent = data.last_login_ip;
 
-                    // Update progress bars
+                    // Update CPU load
+                    document.querySelector('.stat-value[data-key="cpu_load_1"]').textContent = data.cpu_load_1;
+                    document.querySelector('.stat-value[data-key="cpu_load_5"]').textContent = data.cpu_load_5;
+                    document.querySelector('.stat-value[data-key="cpu_load_15"]').textContent = data.cpu_load_15;
+
+                    // Update Memory
+                    document.querySelector('.stat-value[data-key="mem_total"]').textContent = data.mem_total;
+                    document.querySelector('.stat-value[data-key="mem_used"]').textContent = data.mem_used;
+
+                    // Update Disk usage
                     document.querySelector('.disk-usage').style.width = data.disk_used + '%';
-                    document.querySelector('.mysql-usage').style.width = data.mysql_usage + '%';
+
+                    // Update Network
+                    document.querySelector('.stat-value[data-key="rx_mb"]').textContent = data.rx_mb;
+                    document.querySelector('.stat-value[data-key="tx_mb"]').textContent = data.tx_mb;
                 })
                 .catch(error => console.error('Error fetching stats:', error));
         }
