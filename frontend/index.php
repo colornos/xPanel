@@ -1,7 +1,18 @@
 <?php
 
-// Get CPU load
-$cpu_load = sys_getloadavg();
+// Check if sys_getloadavg() is available, else use /proc/loadavg as a fallback
+if (function_exists('sys_getloadavg')) {
+    $cpu_load = sys_getloadavg();
+    $loadavg_1min = $cpu_load[0];
+    $loadavg_5min = $cpu_load[1];
+    $loadavg_15min = $cpu_load[2];
+} else {
+    $loadavg = file_get_contents("/proc/loadavg");
+    $loadavg_values = explode(" ", $loadavg);
+    $loadavg_1min = $loadavg_values[0];
+    $loadavg_5min = $loadavg_values[1];
+    $loadavg_15min = $loadavg_values[2];
+}
 
 // Get Memory usage
 $mem_info = file_get_contents("/proc/meminfo");
@@ -98,15 +109,15 @@ $tx_mb = round($tx_bytes / 1024 / 1024, 2);
         <div class="card"><a href="database.php">Database Management</a></div>
         <div class="card"><a href="server_management.php">Server Management</a></div>
         <div class="card"><a href="domain_management.php">Domain Management</a></div>
-        <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div> <!-- New link to phpMyAdmin -->
+        <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
     </div>
 
     <!-- System Info Section -->
     <div class="stats">
         <h2>CPU Load</h2>
-        <p>1 Minute: <?php echo $cpu_load[0]; ?></p>
-        <p>5 Minutes: <?php echo $cpu_load[1]; ?></p>
-        <p>15 Minutes: <?php echo $cpu_load[2]; ?></p>
+        <p>1 Minute: <?php echo $loadavg_1min; ?></p>
+        <p>5 Minutes: <?php echo $loadavg_5min; ?></p>
+        <p>15 Minutes: <?php echo $loadavg_15min; ?></p>
     </div>
 
     <div class="stats">
