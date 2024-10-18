@@ -35,15 +35,41 @@ sudo cp -r backend/* /var/www/html/xpanel/
 # Set proper permissions
 sudo chown -R www-data:www-data /var/www/html/xpanel/
 
-# Restart Apache
-sudo systemctl restart apache2
+# Create the get_system_stats.sh script for fetching system stats
+cat <<EOL | sudo tee /var/www/html/xpanel/get_system_stats.sh
+#!/bin/bash
+
+# Get CPU Load
+cpu_load=\$(uptime | awk -F'load average:' '{ print \$2 }' | sed 's/,//g')
+
+# Get Memory Usage
+mem_total=\$(grep MemTotal /proc/meminfo | awk '{print \$2}')
+mem_free=\$(grep MemFree /proc/meminfo | awk '{print \$2}')
+mem_used=\$((mem_total - mem_free))
+mem_usage=\$(awk "BEGIN {print \$mem_used/\$mem_total * 100}")
+
+# Get Disk Usage
+disk_usage=\$(df -h / | grep / | awk '{print \$5}')
+
+# Get Network Traffic
+rx_bytes=\$(cat /sys/class/net/\$(ip route show default | awk '/default/ {print \$5}')/statistics/rx_bytes)
+tx_bytes=\$(cat /sys/class/net/\$(ip route show default | awk '/default/ {print \$5}')/statistics/tx_bytes)
+rx_mb=\$(awk "BEGIN {print \$rx_bytes/1024/1024}")
+tx_mb=\$(awk "BEGIN {print \$tx_bytes/1024/1024}")
+
+# Output JSON format
+echo "{ \\"cpu_load\\": \\"\$cpu_load\\", \\"mem_total\\": \\"\$mem_total\\", \\"mem_used\\": \\"\$mem_used\\", \\"mem_usage\\": \\"\$mem_usage\\", \\"disk_usage\\": \\"\$disk_usage\\", \\"rx_mb\\": \\"\$rx_mb\\", \\"tx_mb\\": \\"\$tx_mb\\" }"
+EOL
+
+# Make the script executable
+sudo chmod +x /var/www/html/xpanel/get_system_stats.sh
 
 # Install SSL using Let's Encrypt for the local IP (use --register-unsafely-without-email for testing purposes)
 sudo certbot --apache -d $IP_ADDRESS --register-unsafely-without-email --non-interactive --agree-tos
 
-# Configure sudoers to allow www-data to run system commands without a password
-echo "Configuring sudoers to allow www-data to run system commands without a password..."
-sudo bash -c "echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/uptime, /usr/bin/free, /bin/df, /bin/cat, /usr/bin/ip' >> /etc/sudoers"
+# Configure sudoers to allow www-data to run get_system_stats.sh without a password
+echo "Configuring sudoers to allow www-data to run get_system_stats.sh without a password..."
+sudo bash -c "echo 'www-data ALL=(ALL) NOPASSWD: /var/www/html/xpanel/get_system_stats.sh' >> /etc/sudoers"
 
 # Create a shortcut command to open xPanel in the default browser using the IP address
 echo "Creating a command to easily open xPanel..."
