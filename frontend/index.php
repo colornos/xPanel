@@ -177,36 +177,52 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="section-header">Files</div>
                 <div class="icons-grid">
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="File Manager">
-                        <div>File Manager</div>
+                        <a href="file_manager.php">
+                            <img src="https://via.placeholder.com/50" alt="File Manager">
+                            <div>File Manager</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Images">
-                        <div>Images</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Images">
+                            <div>Images</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
-                        <div>FTP Accounts</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="FTP Accounts">
+                            <div>FTP Accounts</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
-                        <div>FTP Connections</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="FTP Connections">
+                            <div>FTP Connections</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
-                        <div>Directory Privacy</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Directory Privacy">
+                            <div>Directory Privacy</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
-                        <div>Disk Usage</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Disk Usage">
+                            <div>Disk Usage</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup">
-                        <div>Backup</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Backup">
+                            <div>Backup</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
-                        <div>Backup Wizard</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Backup Wizard">
+                            <div>Backup Wizard</div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -216,24 +232,34 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="section-header">Databases</div>
                 <div class="icons-grid">
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
-                        <div>phpMyAdmin</div>
+                        <a href="/phpmyadmin" target="_blank">
+                            <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
+                            <div>phpMyAdmin</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
-                        <div>MySQL Databases</div>
+                        <a href="database.php">
+                            <img src="https://via.placeholder.com/50" alt="MySQL Databases">
+                            <div>MySQL Databases</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
-                        <div>MySQL Database Wizard</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
+                            <div>MySQL Database Wizard</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
-                        <div>Remote MySQL</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="Remote MySQL">
+                            <div>Remote MySQL</div>
+                        </a>
                     </div>
                     <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
-                        <div>PostgreSQL Databases</div>
+                        <a href="#">
+                            <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
+                            <div>PostgreSQL Databases</div>
+                        </a>
                     </div>
                 </div>
             </div>
