@@ -18,7 +18,6 @@
         }
         #editor {
             border: 1px solid #ccc;
-            height: 100%;
             width: 100%;
             margin-bottom: 15px;
             transition: height 0.3s ease;
@@ -87,6 +86,16 @@
                 document.querySelector('form').addEventListener('submit', function () {
                     document.getElementById('file_content').value = editor.getValue();
                 });
+
+                // Set the initial editor height to almost fill the screen
+                function setEditorHeight() {
+                    var height = window.innerHeight - 150; // Adjust '150' to leave space for header/buttons
+                    document.getElementById('editor').style.height = height + 'px';
+                    editor.resize();
+                }
+                
+                setEditorHeight();
+                window.addEventListener('resize', setEditorHeight);
 
                 // Toggle fullscreen mode
                 var isFullscreen = false;
