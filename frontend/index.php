@@ -252,7 +252,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="icons-grid">
                     <div class="icon">
                         <i class="fas fa-terminal"></i>
-                        <div><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank">Shellinabox Terminal</a></div>
+                        <div><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank">Terminal</a></div>
                     </div>
                 </div>
             </div>
