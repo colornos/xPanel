@@ -5,27 +5,20 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
     $stats = json_decode($system_stats, true);
 
-    // 1. Get the current user
+    // Prepare system stats
     $current_user = get_current_user();
-
-    // 2. Get the home directory
     $home_directory = getenv('HOME');
-
-    // 3. Get the last login IP address (parsing the output of the 'last' command)
     $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
     $last_login_ip = trim($last_login_info);
-
-    // 4. Get the server's IP address (this will be used as the primary domain)
     $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
-    // Prepare the data to send back
     $data = [
         'cpu_load_1' => (float) $stats['cpu_load'],
         'cpu_load_5' => (float) $stats['cpu_load'],
         'cpu_load_15' => (float) $stats['cpu_load'],
         'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
         'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
-        'disk_total' => 100, // Placeholder, replace with actual values
+        'disk_total' => 100, // Placeholder
         'disk_used' => (float) trim($stats['disk_usage'], '%'), // Disk usage as percentage
         'rx_mb' => (float) $stats['rx_mb'],
         'tx_mb' => (float) $stats['tx_mb'],
@@ -35,13 +28,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
         'last_login_ip' => $last_login_ip
     ];
 
-    // Return JSON response
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
 }
 
-// For the initial page load, run the same shell commands to populate the HTML with default values
 $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
 $stats = json_decode($system_stats, true);
 $current_user = get_current_user();
@@ -49,7 +40,6 @@ $home_directory = getenv('HOME');
 $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
 $last_login_ip = trim($last_login_info);
 $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
-
 ?>
 
 <!DOCTYPE html>
@@ -62,7 +52,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Add styling for cPanel-like interface -->
+    <!-- Styling for cPanel-like layout -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -139,7 +129,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             padding: 20px;
         }
 
-        /* Right Sidebar (Statistics) */
+        /* Right Sidebar (Line Graph + Stats) */
         .right-sidebar {
             width: 300px;
             background-color: #f7fafc;
@@ -147,8 +137,13 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-left: 1px solid #e2e8f0;
         }
 
-        /* Responsive Grid for Icons/Sections */
-        .grid {
+        .chart-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation Links */
+        .nav-links {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
@@ -175,11 +170,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
         .card a:hover {
             color: #2b6cb0;
-        }
-
-        .chart-container {
-            width: 100%;
-            margin-bottom: 20px;
         }
 
         /* General Information Section */
@@ -211,39 +201,28 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         <!-- Sidebar -->
         <div class="sidebar">
             <h3>FILES</h3>
-            <a href="#">File Manager</a>
+            <a href="file_manager.php">File Manager</a>
             <a href="#">Disk Usage</a>
             <a href="#">FTP Connections</a>
             <a href="#">Backup</a>
 
             <h3>DATABASES</h3>
-            <a href="#">phpMyAdmin</a>
-            <a href="#">MySQL Databases</a>
+            <a href="database.php">Database Management</a>
+            <a href="/phpmyadmin" target="_blank">phpMyAdmin</a>
         </div>
 
         <!-- Main Content Area -->
         <div class="main-content">
-            <!-- Grid of Sections (mimicking cPanel layout) -->
-            <div class="grid">
-                <div class="card">
-                    <img src="file-icon.png" alt="File Manager Icon" />
-                    <a href="#">File Manager</a>
-                </div>
-                <div class="card">
-                    <img src="database-icon.png" alt="Database Icon" />
-                    <a href="#">Databases</a>
-                </div>
-                <div class="card">
-                    <img src="ftp-icon.png" alt="FTP Icon" />
-                    <a href="#">FTP Connections</a>
-                </div>
-                <div class="card">
-                    <img src="backup-icon.png" alt="Backup Icon" />
-                    <a href="#">Backup</a>
-                </div>
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <div class="card"><a href="file_manager.php">File Manager</a></div>
+                <div class="card"><a href="database.php">Database Management</a></div>
+                <div class="card"><a href="server_management.php">Server Management</a></div>
+                <div class="card"><a href="domain_management.php">Domain Management</a></div>
+                <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
             </div>
 
-            <!-- Charts (for live data) -->
+            <!-- Mini Graphs (Below the Main Content) -->
             <div class="chart-container">
                 <h3>CPU Load</h3>
                 <canvas id="cpuLoadChart"></canvas>
@@ -270,6 +249,12 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <p><strong>Home Directory:</strong> <?php echo $home_directory; ?></p>
             <p><strong>Last Login IP:</strong> <?php echo $last_login_ip; ?></p>
 
+            <!-- Line Graph for File Usage, Memory, etc. -->
+            <div class="chart-container">
+                <h3>System Resource Usage</h3>
+                <canvas id="resourceUsageChart"></canvas>
+            </div>
+
             <h3>Statistics</h3>
             <div class="stats-item">
                 <strong>CPU Load:</strong>
@@ -294,7 +279,22 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <script>
         const updateInterval = 5000; // Update every 5 seconds
 
-        // Initialize charts
+        // Initialize line graph for system resource usage (right sidebar)
+        const resourceUsageChart = new Chart(document.getElementById('resourceUsageChart'), {
+            type: 'line',
+            data: {
+                labels: ['File Usage', 'Memory Usage', 'Processes'],
+                datasets: [{
+                    label: 'Resource Usage',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    data: [45, 80, 20] // Replace with dynamic data later
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Initialize mini graphs (for CPU, Memory, Disk, Network Traffic)
         const cpuLoadChart = new Chart(document.getElementById('cpuLoadChart'), {
             type: 'line',
             data: {
@@ -356,6 +356,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             fetch('?action=get_stats')
                 .then(response => response.json())
                 .then(data => {
+                    // Update resource usage line chart (right sidebar)
+                    resourceUsageChart.data.datasets[0].data = [data.disk_used, data.mem_used, data.cpu_load_1];
+                    resourceUsageChart.update();
+
                     // Update CPU Load Chart
                     cpuLoadChart.data.datasets[0].data = [data.cpu_load_1, data.cpu_load_5, data.cpu_load_15];
                     cpuLoadChart.update();
@@ -372,7 +376,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     networkTrafficChart.data.datasets[0].data = [data.rx_mb, data.tx_mb];
                     networkTrafficChart.update();
 
-                    // Update live data in the General Info sidebar
+                    // Update live stats in the General Info sidebar
                     document.querySelector('.right-sidebar [data-key="current_user"]').textContent = data.current_user;
                     document.querySelector('.right-sidebar [data-key="primary_domain"]').textContent = data.primary_domain;
                     document.querySelector('.right-sidebar [data-key="home_directory"]').textContent = data.home_directory;
