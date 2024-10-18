@@ -2,46 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xPanel - File Manager</title>
-    <link rel="apple-touch-icon" href="app-assets/images/ico/apple-icon-120.png">
-    <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/ico/favicon.ico">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="app-assets/fonts/material-icons/material-icons.css">
-
-    <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/material-vendors.min.css">
-    <link rel="stylesheet" type="text/css" href="app-assets/vendors/css/ui/prism.min.css">
-    <!-- END: Vendor CSS-->
-
-    <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="app-assets/css/material.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/components.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/bootstrap-extended.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/material-extended.css">
     <link rel="stylesheet" type="text/css" href="app-assets/css/material-colors.css">
-    <!-- END: Theme CSS-->
-
-    <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="app-assets/css/core/menu/menu-types/material-vertical-compact-menu.css">
-    <link rel="stylesheet" type="text/css" href="app-assets/css/core/colors/material-palette-gradient.css">
-    <link rel="stylesheet" type="text/css" href="app-assets/fonts/mobiriseicons/24px/mobirise/style.css">
-    <!-- END: Page CSS-->
-
-    <!-- Include Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    
     <style>
         /* Custom styling for File Manager */
         .container {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             padding: 20px;
         }
         .main-content {
-            flex: 1;
-            margin-right: 1rem;
+            flex: 3;
+            margin-right: 20px;
         }
         .section {
             background-color: #fff;
@@ -73,72 +52,36 @@
             position: fixed !important;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
             width: 100vw;
             height: 100vh;
             z-index: 9999;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: #fff;
         }
         .fullscreen #editor {
             height: 100vh !important;
             width: 100vw !important;
             border: none;
         }
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.25rem;
-        }
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.25rem;
-        }
-        .breadcrumb {
-            max-width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
     </style>
 </head>
 <body class="vertical-layout vertical-compact-menu material-vertical-layout material-layout 1-column fixed-navbar">
 
-    <!-- BEGIN: Header-->
-    <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-without-dd-arrow fixed-top navbar-light navbar-shadow navbar-brand-center">
-        <div class="navbar-wrapper">
-            <div class="navbar-header">
-                <ul class="nav navbar-nav flex-row">
-                    <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a></li>
-                    <li class="nav-item"><a class="navbar-brand" href="index.php"><img class="brand-logo" alt="x" src="app-assets/images/logo/logo.png">
-                            <h3 class="brand-text">xPanel</h3>
-                        </a></li>
-                    <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
-                </ul>
-            </div>
-            <div class="navbar-container content">
-                <div class="collapse navbar-collapse" id="navbar-mobile">
-                    <ul class="nav navbar-nav float-right">
-                        <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="avatar avatar-online"><img src="app-assets/images/portrait/small/default.jpg" alt="avatar"><i></i></span></a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#"><i class="ft-user"></i> Edit Profile</a>
-                                <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="ft-power"></i> Logout</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<!-- BEGIN: Header-->
+<nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-without-dd-arrow fixed-top navbar-light navbar-shadow navbar-brand-center">
+    <div class="navbar-wrapper">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav flex-row">
+                <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a></li>
+                <li class="nav-item"><a class="navbar-brand" href="index.php"><img class="brand-logo" alt="x" src="app-assets/images/logo/logo.png">
+                        <h3 class="brand-text">xPanel</h3>
+                    </a></li>
+            </ul>
         </div>
-    </nav>
-    <!-- END: Header-->
+    </div>
+</nav>
+<!-- END: Header-->
 
 <!-- BEGIN: Content-->
 <div class="app-content content">
@@ -153,13 +96,12 @@
                         $dir = "/var/www/html/";
 
                         if (isset($_GET['dir'])) {
-                            $dir = realpath($_GET['dir']); // Sanitize path
+                            $dir = $_GET['dir'];
                         }
 
                         // Handle file save operation
                         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['file_path'], $_POST['file_content'])) {
-                            $file_path = realpath($_POST['file_path']); // Sanitize file path
-                            if ($file_path && file_put_contents($file_path, $_POST['file_content']) !== false) {
+                            if (file_put_contents($_POST['file_path'], $_POST['file_content']) !== false) {
                                 echo "<div class='alert alert-success'>File saved successfully!</div>";
                             } else {
                                 echo "<div class='alert alert-danger'>Error saving the file!</div>";
@@ -168,9 +110,9 @@
 
                         // If a specific file is selected for editing
                         if (isset($_GET['file'])) {
-                            $file_path = realpath($_GET['file']); // Sanitize file path
+                            $file_path = $_GET['file'];
 
-                            if ($file_path && file_exists($file_path)) {
+                            if (file_exists($file_path)) {
                                 $file_content = file_get_contents($file_path);
                                 ?>
                                 <h2>Editing: <?php echo htmlspecialchars($file_path); ?></h2>
@@ -278,10 +220,7 @@
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light navbar-border navbar-shadow">
-        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
-            <span class="float-md-left d-block d-md-inline-block">Copyright &copy; 2019 Colornos</span>
-            <span class="float-md-right d-none d-lg-block">Hand-crafted & Made with<i class="ft-heart pink"></i><span id="scroll-top"></span></span>
-        </p>
+        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">Copyright &copy; 2019 Colornos</span><span class="float-md-right d-none d-lg-block">Hand-crafted & Made with<i class="ft-heart pink"></i><span id="scroll-top"></span></span></p>
     </footer>
     <!-- END: Footer-->
 
@@ -301,6 +240,8 @@
     <!-- BEGIN: Page JS-->
     <script src="app-assets/js/scripts/pages/material-app.js"></script>
     <!-- END: Page JS-->
+
 </body>
 <!-- END: Body-->
+
 </html>
