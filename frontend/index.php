@@ -56,7 +56,8 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <meta name="keywords" content="Control Panel">
     <meta name="author" content="Colornos">
     <title>xPanel</title>
-    
+    <link rel="apple-touch-icon" href="app-assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" href="app-assets/images/ico/favicon.ico">
     <!-- Include Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
