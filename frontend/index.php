@@ -255,7 +255,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     </div>
                     <div class="icon">
                         <a href="#">
-                            <i class="fas fa-database"></i>
+                            <i class="fas fa-server"></i>
                             <div>Remote MySQL</div>
                         </a>
                     </div>
@@ -263,6 +263,19 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <a href="#">
                             <i class="fas fa-server"></i>
                             <div>PostgreSQL Databases</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Terminal Row -->
+            <div class="section">
+                <div class="section-header">Terminal</div>
+                <div class="icons-grid">
+                    <div class="icon">
+                        <a href="http://<?php echo $primary_domain; ?>:4200" target="_blank">
+                            <i class="fas fa-terminal"></i>
+                            <div>Live Terminal</div>
                         </a>
                     </div>
                 </div>
