@@ -15,8 +15,8 @@ sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 sudo phpenmod mbstring
 sudo systemctl restart apache2
 
-# Get the server's IP address
-IP_ADDRESS=$(hostname -I | awk '{print $1}')
+# Get the server's IP address (this will be used as the domain for local testing)
+IP_ADDRESS="192.168.0.19"
 
 # Set up MySQL database
 echo "Setting up the MySQL database..."
@@ -38,18 +38,17 @@ sudo chown -R www-data:www-data /var/www/html/xpanel/
 # Restart Apache
 sudo systemctl restart apache2
 
-# Install SSL using Let's Encrypt (adjust to your domain name)
-DOMAIN_NAME="colornos.ddns.net"  # Replace with your domain name
-sudo certbot --apache -d $DOMAIN_NAME
+# Install SSL using Let's Encrypt for the local IP (use --register-unsafely-without-email for testing purposes)
+sudo certbot --apache -d $IP_ADDRESS --register-unsafely-without-email --non-interactive --agree-tos
 
-# Create a shortcut command to open xPanel in the default browser using the server's IP address
+# Create a shortcut command to open xPanel in the default browser using the IP address
 echo "Creating a command to easily open xPanel..."
-sudo bash -c "echo 'xdg-open https://$DOMAIN_NAME/xpanel' > /usr/local/bin/xpanel"
+sudo bash -c "echo 'xdg-open https://$IP_ADDRESS/xpanel' > /usr/local/bin/xpanel"
 sudo chmod +x /usr/local/bin/xpanel
 
-# Automatically open xPanel after installation using the domain name
+# Automatically open xPanel after installation using the IP address
 echo "Opening xPanel in your default browser..."
-xdg-open "https://$DOMAIN_NAME/xpanel"
+xdg-open "https://$IP_ADDRESS/xpanel"
 
 # Completion message
-echo "Installation complete! You can now access xPanel at https://$DOMAIN_NAME/xpanel or by typing 'xpanel' in the terminal."
+echo "Installation complete! You can now access xPanel at https://$IP_ADDRESS/xpanel or by typing 'xpanel' in the terminal."
