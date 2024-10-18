@@ -54,6 +54,9 @@ block_devices=$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT)
 # Get System Logs (from journalctl)
 sys_logs=$(journalctl -n 10)
 
+# Get the current logged-in users (from who)
+logged_in_users=$(who | awk '{print $1}' | sort | uniq | paste -sd "," -)
+
 # Output as JSON
 echo "{ 
     \"cpu_usage\": \"$cpu_usage\", 
@@ -71,5 +74,6 @@ echo "{
     \"gpu_usage\": \"$gpu_usage\", 
     \"cpu_temp\": \"$cpu_temp\", 
     \"block_devices\": \"$block_devices\", 
-    \"sys_logs\": \"$sys_logs\" 
+    \"sys_logs\": \"$sys_logs\", 
+    \"logged_in_users\": \"$logged_in_users\" 
 }"
