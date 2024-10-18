@@ -1,4 +1,7 @@
 <?php
+// Start the session to access session variables
+session_start();
+
 // Check if this is an AJAX request for live stats
 if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     // Execute the bash script to get system stats
@@ -6,7 +9,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $stats = json_decode($system_stats, true);
 
     // Prepare additional system stats
-    $current_user = trim(shell_exec('whoami'));
+    $current_user = $stats['logged_in_users'] ?? 'No users logged in';  // Retrieve logged-in users from shell script
     $home_directory = trim(shell_exec('echo ~' . $current_user));
     $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
     $last_login_ip = trim($last_login_info);
@@ -38,7 +41,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
 // Fetch data for the initial page load
 $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
 $stats = json_decode($system_stats, true);
-$current_user = trim(shell_exec('whoami'));
+$current_user = $stats['logged_in_users'] ?? 'No users logged in';  // Retrieve logged-in users from shell script
 $home_directory = trim(shell_exec('echo ~' . $current_user));
 $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
 $last_login_ip = trim($last_login_info);
@@ -84,6 +87,16 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     
     <style>
+        /* Shared header style for both main and sidebar */
+        .header-style {
+            background-color: #0056A4;
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px 5px 0 0;
+        }
+
         /* Custom styling for the sections */
         .container {
             display: flex;
@@ -100,13 +113,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .section-header {
-            background-color: #0056A4;
-            color: #fff;
-            padding: 10px 15px;
-            font-size: 16px;
-            font-weight: bold;
-        }
+
         .icons-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -132,6 +139,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .progress-container {
             margin-bottom: 20px;
         }
@@ -191,7 +199,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="main-content">
                     <!-- Files Section -->
                     <div class="section">
-                        <div class="section-header">Files</div>
+                        <div class="header-style">Files</div>
                         <div class="icons-grid">
                             <div class="icon">
                                 <i class="fas fa-folder"></i>
@@ -226,7 +234,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
                     <!-- Databases Section -->
                     <div class="section">
-                        <div class="section-header">Databases</div>
+                        <div class="header-style">Databases</div>
                         <div class="icons-grid">
                             <div class="icon">
                                 <i class="fas fa-database"></i>
@@ -241,7 +249,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
                     <!-- Terminal Section -->
                     <div class="section">
-                        <div class="section-header">Terminal</div>
+                        <div class="header-style">Terminal</div>
                         <div class="icons-grid">
                             <div class="icon">
                                 <i class="fas fa-terminal"></i>
@@ -253,9 +261,9 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
                 <!-- Sidebar with Live Statistics -->
                 <div class="sidebar">
-                    <div class="sidebar-header">General Information</div>
+                    <div class="header-style">General Information</div>
                     <div class="stat">
-                        <div class="stat-label">Current User:</div>
+                        <div class="stat-label">Current User(s):</div>
                         <div class="stat-value" id="current_user"><?php echo $current_user; ?></div>
                     </div>
                     <div class="stat">
@@ -271,7 +279,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <div class="stat-value" id="last_login_ip"><?php echo $last_login_ip; ?></div>
                     </div>
 
-                    <div class="sidebar-header">Live Statistics</div>
+                    <div class="header-style">Live Statistics</div>
 
                     <!-- CPU Usage -->
                     <div class="progress-container">
@@ -376,9 +384,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     <script src="app-assets/js/core/app.js"></script>
     <!-- END: Theme JS-->
 
-    <!-- BEGIN: Page JS-->
-    <script src="app-assets/js/scripts/pages/material-app.js"></script>
-
     <!-- Dynamic Stats Fetching -->
     <script>
         function updateStats() {
@@ -393,6 +398,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
                     document.getElementById('block_devices_value').textContent = data.block_devices;
                     document.getElementById('sys_logs_value').textContent = data.sys_logs;
+                    document.getElementById('current_user').textContent = data.current_user;
                 })
                 .catch(error => console.error('Error fetching stats:', error));
         }
