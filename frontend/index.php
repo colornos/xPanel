@@ -92,24 +92,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
-        .icons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            padding: 15px;
-        }
-        .icon {
-            text-align: center;
-        }
-        .icon img {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 5px;
-        }
-        .icon div {
-            font-size: 14px;
-            font-weight: 500;
-        }
         .sidebar {
             flex: 1;
             background-color: #fff;
@@ -186,75 +168,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     </header>
 
     <div class="container">
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Files Section -->
-            <div class="section">
-                <div class="section-header">Files</div>
-                <div class="icons-grid">
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="File Manager">
-                        <div>File Manager</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Images">
-                        <div>Images</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
-                        <div>FTP Accounts</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
-                        <div>FTP Connections</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
-                        <div>Directory Privacy</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
-                        <div>Disk Usage</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup">
-                        <div>Backup</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
-                        <div>Backup Wizard</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Databases Section -->
-            <div class="section">
-                <div class="section-header">Databases</div>
-                <div class="icons-grid">
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
-                        <div>phpMyAdmin</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
-                        <div>MySQL Databases</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
-                        <div>MySQL Database Wizard</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
-                        <div>Remote MySQL</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
-                        <div>PostgreSQL Databases</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Sidebar with Live Statistics -->
         <div class="sidebar">
             <div class="sidebar-header">General Information</div>
@@ -277,48 +190,52 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
             <div class="sidebar-header">Live Statistics</div>
 
-            <!-- CPU Load Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-label">CPU Load</div>
-                <div class="progress-bar">
-                    <span class="cpu-load" id="cpu_load" style="width: 0%;"></span>
-                    <span class="progress-number" id="cpu_load_value">0%</span>
-                </div>
-            </div>
-
-            <!-- Memory Usage Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-label">Memory Usage</div>
-                <div class="progress-bar">
-                    <span class="mem-usage" id="mem_usage" style="width: 0%;"></span>
-                    <span class="progress-number" id="mem_usage_value">0%</span>
-                </div>
-            </div>
-
-            <!-- Disk Usage Progress Bar -->
+            <!-- Disk Usage -->
             <div class="progress-container">
                 <div class="progress-label">Disk Usage</div>
+                <div class="stat-value">
+                    <?php echo $stats['disk_used']; ?>% used
+                    <br>
+                    <strong><?php echo $stats['disk_used']; ?>%</strong> 
+                    <!-- Adjust this based on actual available/used data -->
+                </div>
                 <div class="progress-bar">
-                    <span class="disk-usage" id="disk_usage" style="width: 0%;"></span>
-                    <span class="progress-number" id="disk_usage_value">0%</span>
+                    <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>%;"></span>
                 </div>
             </div>
 
-            <!-- Network Traffic (Received) Progress Bar -->
+            <!-- Memory Usage -->
+            <div class="progress-container">
+                <div class="progress-label">Memory Usage</div>
+                <div class="stat-value">
+                    <?php echo round($stats['mem_used'], 2) . ' MB / ' . round($stats['mem_total'], 2) . ' MB'; ?>
+                    <br>
+                    <strong><?php echo $stats['mem_usage']; ?>%</strong>
+                </div>
+                <div class="progress-bar">
+                    <span class="mem-usage" id="mem_usage" style="width: <?php echo $stats['mem_usage']; ?>%;"></span>
+                </div>
+            </div>
+
+            <!-- Network Traffic (Received) -->
             <div class="progress-container">
                 <div class="progress-label">Network Received (MB)</div>
+                <div class="stat-value">
+                    <strong><?php echo $stats['rx_mb']; ?> MB</strong>
+                </div>
                 <div class="progress-bar">
-                    <span class="network-traffic" id="rx_mb" style="width: 0%;"></span>
-                    <span class="progress-number" id="rx_mb_value">0MB</span>
+                    <span class="network-traffic" id="rx_mb" style="width: <?php echo $stats['rx_mb'] / 10; ?>%;"></span>
                 </div>
             </div>
 
-            <!-- Network Traffic (Transmitted) Progress Bar -->
+            <!-- Network Traffic (Transmitted) -->
             <div class="progress-container">
                 <div class="progress-label">Network Transmitted (MB)</div>
+                <div class="stat-value">
+                    <strong><?php echo $stats['tx_mb']; ?> MB</strong>
+                </div>
                 <div class="progress-bar">
-                    <span class="network-traffic" id="tx_mb" style="width: 0%;"></span>
-                    <span class="progress-number" id="tx_mb_value">0MB</span>
+                    <span class="network-traffic" id="tx_mb" style="width: <?php echo $stats['tx_mb'] / 10; ?>%;"></span>
                 </div>
             </div>
         </div>
@@ -336,20 +253,16 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     document.getElementById('home_directory').textContent = data.home_directory;
                     document.getElementById('last_login_ip').textContent = data.last_login_ip;
 
-                    // Update progress bars
-                    document.getElementById('cpu_load').style.width = (data.cpu_load * 10) + '%';
-                    document.getElementById('cpu_load_value').textContent = (data.cpu_load * 10) + '%';
-                    
-                    document.getElementById('mem_usage').style.width = data.mem_usage + '%';
-                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
-                    
+                    // Update progress bars and values
                     document.getElementById('disk_usage').style.width = data.disk_used + '%';
-                    document.getElementById('disk_usage_value').textContent = data.disk_used.toFixed(2) + '%';
-                    
-                    document.getElementById('rx_mb').style.width = (data.rx_mb / 10) + '%'; // Adjust as needed
+                    document.getElementById('mem_usage').style.width = data.mem_usage + '%';
+                    document.getElementById('rx_mb').style.width = (data.rx_mb / 10) + '%';
+                    document.getElementById('tx_mb').style.width = (data.tx_mb / 10) + '%';
+
+                    // Update number values
+                    document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
+                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
                     document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + 'MB';
-                    
-                    document.getElementById('tx_mb').style.width = (data.tx_mb / 10) + '%'; // Adjust as needed
                     document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + 'MB';
                 })
                 .catch(error => console.error('Error fetching stats:', error));
