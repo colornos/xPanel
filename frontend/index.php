@@ -102,10 +102,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             height: 50px;
             margin-bottom: 5px;
         }
-        .icon div {
-            font-size: 14px;
-            font-weight: 500;
-        }
         .sidebar {
             flex: 1;
             background-color: #fff;
@@ -176,38 +172,13 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="section">
                 <div class="section-header">Files</div>
                 <div class="icons-grid">
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="File Manager">
-                        <div>File Manager</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Images">
-                        <div>Images</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
-                        <div>FTP Accounts</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
-                        <div>FTP Connections</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
-                        <div>Directory Privacy</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
-                        <div>Disk Usage</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup">
-                        <div>Backup</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
-                        <div>Backup Wizard</div>
-                    </div>
+                    <div class="card"><a href="file_manager.php">File Manager</a></div>
+                    <div class="card"><a href="ftp_accounts.php">FTP Accounts</a></div>
+                    <div class="card"><a href="ftp_connections.php">FTP Connections</a></div>
+                    <div class="card"><a href="directory_privacy.php">Directory Privacy</a></div>
+                    <div class="card"><a href="disk_usage.php">Disk Usage</a></div>
+                    <div class="card"><a href="backup.php">Backup</a></div>
+                    <div class="card"><a href="backup_wizard.php">Backup Wizard</a></div>
                 </div>
             </div>
 
@@ -215,26 +186,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="section">
                 <div class="section-header">Databases</div>
                 <div class="icons-grid">
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
-                        <div>phpMyAdmin</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
-                        <div>MySQL Databases</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
-                        <div>MySQL Database Wizard</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
-                        <div>Remote MySQL</div>
-                    </div>
-                    <div class="icon">
-                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
-                        <div>PostgreSQL Databases</div>
-                    </div>
+                    <div class="card"><a href="database.php">Database Management</a></div>
+                    <div class="card"><a href="server_management.php">Server Management</a></div>
+                    <div class="card"><a href="domain_management.php">Domain Management</a></div>
+                    <div class="card"><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div> <!-- Link to phpMyAdmin -->
                 </div>
             </div>
         </div>
