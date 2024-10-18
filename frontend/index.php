@@ -92,6 +92,24 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            padding: 15px;
+        }
+        .icon {
+            text-align: center;
+        }
+        .icon img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 5px;
+        }
+        .icon div {
+            font-size: 14px;
+            font-weight: 500;
+        }
         .sidebar {
             flex: 1;
             background-color: #fff;
@@ -107,9 +125,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             font-weight: bold;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
-        }
-        .sidebar .stat {
-            margin-bottom: 15px;
         }
         .progress-container {
             margin-bottom: 20px;
@@ -146,6 +161,14 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .network-traffic {
             background-color: #27ae60;
         }
+        /* Labels for side info */
+        .stat-label {
+            font-weight: bold;
+            color: #0056A4;
+        }
+        .stat-value {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -155,20 +178,93 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
     </header>
 
     <div class="container">
-        <!-- Sidebar -->
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Files Section -->
+            <div class="section">
+                <div class="section-header">Files</div>
+                <div class="icons-grid">
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="File Manager">
+                        <div>File Manager</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Images">
+                        <div>Images</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="FTP Accounts">
+                        <div>FTP Accounts</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="FTP Connections">
+                        <div>FTP Connections</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Directory Privacy">
+                        <div>Directory Privacy</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Disk Usage">
+                        <div>Disk Usage</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Backup">
+                        <div>Backup</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Backup Wizard">
+                        <div>Backup Wizard</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Databases Section -->
+            <div class="section">
+                <div class="section-header">Databases</div>
+                <div class="icons-grid">
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="phpMyAdmin">
+                        <div>phpMyAdmin</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="MySQL Databases">
+                        <div>MySQL Databases</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="MySQL Database Wizard">
+                        <div>MySQL Database Wizard</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="Remote MySQL">
+                        <div>Remote MySQL</div>
+                    </div>
+                    <div class="icon">
+                        <img src="https://via.placeholder.com/50" alt="PostgreSQL Databases">
+                        <div>PostgreSQL Databases</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Live Statistics -->
         <div class="sidebar">
             <div class="sidebar-header">General Information</div>
             <div class="stat">
-                <strong>Current User:</strong> <span id="current_user"><?php echo $current_user; ?></span>
+                <div class="stat-label">Current User:</div>
+                <div class="stat-value" id="current_user"><?php echo $current_user; ?></div>
             </div>
             <div class="stat">
-                <strong>Primary Domain (Server IP):</strong> <span id="primary_domain"><?php echo $primary_domain; ?></span>
+                <div class="stat-label">Primary Domain (Server IP):</div>
+                <div class="stat-value" id="primary_domain"><?php echo $primary_domain; ?></div>
             </div>
             <div class="stat">
-                <strong>Home Directory:</strong> <span id="home_directory"><?php echo $home_directory; ?></span>
+                <div class="stat-label">Home Directory:</div>
+                <div class="stat-value" id="home_directory"><?php echo $home_directory; ?></div>
             </div>
             <div class="stat">
-                <strong>Last Login IP:</strong> <span id="last_login_ip"><?php echo $last_login_ip; ?></span>
+                <div class="stat-label">Last Login IP:</div>
+                <div class="stat-value" id="last_login_ip"><?php echo $last_login_ip; ?></div>
             </div>
 
             <div class="sidebar-header">Live Statistics</div>
