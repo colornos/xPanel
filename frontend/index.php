@@ -212,10 +212,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <i class="fas fa-database"></i>
                         <div>Backup</div>
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-magic"></i>
-                        <div>Backup Wizard</div>
-                    </div>
                 </div>
             </div>
 
@@ -234,14 +230,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="icon">
                         <i class="fas fa-database"></i>
                         <div><a href="database.php">MySQL Database Wizard</a></div>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-cloud"></i>
-                        <div><a href="database.php">Remote MySQL</a></div>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-server"></i>
-                        <div>PostgreSQL Databases</div>
                     </div>
                 </div>
             </div>
