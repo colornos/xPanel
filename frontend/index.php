@@ -6,8 +6,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $stats = json_decode($system_stats, true);
 
     // Prepare system stats
-    $current_user = get_current_user();
-    $home_directory = getenv('HOME');
+    $current_user = trim(shell_exec('whoami'));
+    $home_directory = trim(shell_exec('echo ~' . $current_user));
     $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
     $last_login_ip = trim($last_login_info);
     $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
@@ -34,8 +34,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
 // Fetch data for the initial page load
 $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
 $stats = json_decode($system_stats, true);
-$current_user = get_current_user();
-$home_directory = getenv('HOME');
+$current_user = trim(shell_exec('whoami'));
+$home_directory = trim(shell_exec('echo ~' . $current_user));
 $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
 $last_login_ip = trim($last_login_info);
 $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
@@ -169,6 +169,14 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .stat-value {
             margin-bottom: 15px;
         }
+        /* Adding values next to the progress bars */
+        .progress-number {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            font-size: 12px;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -274,6 +282,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="progress-label">CPU Load</div>
                 <div class="progress-bar">
                     <span class="cpu-load" id="cpu_load" style="width: 0%;"></span>
+                    <span class="progress-number" id="cpu_load_value">0%</span>
                 </div>
             </div>
 
@@ -282,6 +291,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="progress-label">Memory Usage</div>
                 <div class="progress-bar">
                     <span class="mem-usage" id="mem_usage" style="width: 0%;"></span>
+                    <span class="progress-number" id="mem_usage_value">0%</span>
                 </div>
             </div>
 
@@ -289,7 +299,8 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="progress-container">
                 <div class="progress-label">Disk Usage</div>
                 <div class="progress-bar">
-                    <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>;"></span>
+                    <span class="disk-usage" id="disk_usage" style="width: 0%;"></span>
+                    <span class="progress-number" id="disk_usage_value">0%</span>
                 </div>
             </div>
 
@@ -298,6 +309,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="progress-label">Network Received (MB)</div>
                 <div class="progress-bar">
                     <span class="network-traffic" id="rx_mb" style="width: 0%;"></span>
+                    <span class="progress-number" id="rx_mb_value">0MB</span>
                 </div>
             </div>
 
@@ -306,6 +318,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="progress-label">Network Transmitted (MB)</div>
                 <div class="progress-bar">
                     <span class="network-traffic" id="tx_mb" style="width: 0%;"></span>
+                    <span class="progress-number" id="tx_mb_value">0MB</span>
                 </div>
             </div>
         </div>
@@ -325,10 +338,19 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
                     // Update progress bars
                     document.getElementById('cpu_load').style.width = (data.cpu_load * 10) + '%';
+                    document.getElementById('cpu_load_value').textContent = (data.cpu_load * 10) + '%';
+                    
                     document.getElementById('mem_usage').style.width = data.mem_usage + '%';
+                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
+                    
                     document.getElementById('disk_usage').style.width = data.disk_used + '%';
+                    document.getElementById('disk_usage_value').textContent = data.disk_used.toFixed(2) + '%';
+                    
                     document.getElementById('rx_mb').style.width = (data.rx_mb / 10) + '%'; // Adjust as needed
+                    document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + 'MB';
+                    
                     document.getElementById('tx_mb').style.width = (data.tx_mb / 10) + '%'; // Adjust as needed
+                    document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + 'MB';
                 })
                 .catch(error => console.error('Error fetching stats:', error));
         }
