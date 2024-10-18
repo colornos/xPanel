@@ -17,7 +17,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
         'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
         'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
         'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
-        'disk_used' => (float) trim($stats['disk_usage'], '%'), // Disk usage as percentage
+        'disk_used' => trim($stats['disk_usage'], '%'), // Disk usage as percentage
         'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
         'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
         'current_user' => $current_user,
@@ -65,7 +65,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         header .logo {
             font-size: 26px;
             font-weight: bold;
-            font-family: 'Arial', sans-serif;
         }
         .container {
             display: flex;
@@ -88,9 +87,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             padding: 10px 15px;
             font-size: 16px;
             font-weight: bold;
-            text-transform: uppercase;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
         }
         .icons-grid {
             display: grid;
@@ -123,8 +119,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             padding: 10px 15px;
             font-size: 14px;
             font-weight: bold;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
         }
         .progress-container {
             margin-bottom: 20px;
@@ -132,7 +126,6 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .progress-label {
             font-size: 12px;
             margin-bottom: 5px;
-            color: #333;
         }
         .progress-bar {
             height: 20px;
@@ -161,21 +154,12 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .network-traffic {
             background-color: #27ae60;
         }
-        /* Labels for side info */
         .stat-label {
             font-weight: bold;
             color: #0056A4;
         }
         .stat-value {
             margin-bottom: 15px;
-        }
-        /* Adding values next to the progress bars */
-        .progress-number {
-            position: absolute;
-            right: 10px;
-            top: 0;
-            font-size: 12px;
-            color: #000;
         }
     </style>
 </head>
@@ -281,12 +265,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="progress-container">
                 <div class="progress-label">Disk Usage</div>
                 <div class="stat-value">
-                    <?php echo $stats['disk_used']; ?>% used
-                    <br>
-                    <strong><?php echo $stats['disk_used']; ?>%</strong> 
+                    <span id="disk_usage_value"><?php echo $stats['disk_used']; ?>%</span> used
                 </div>
                 <div class="progress-bar">
-                    <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>%;"></span>
+                    <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_used']; ?>%;"></span>
                 </div>
             </div>
 
@@ -296,7 +278,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                 <div class="stat-value">
                     <?php echo round($stats['mem_used'], 2) . ' MB / ' . round($stats['mem_total'], 2) . ' MB'; ?>
                     <br>
-                    <strong><?php echo $stats['mem_usage']; ?>%</strong>
+                    <strong><span id="mem_usage_value"><?php echo $stats['mem_usage']; ?></span>%</strong>
                 </div>
                 <div class="progress-bar">
                     <span class="mem-usage" id="mem_usage" style="width: <?php echo $stats['mem_usage']; ?>%;"></span>
@@ -307,7 +289,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="progress-container">
                 <div class="progress-label">Network Received (MB)</div>
                 <div class="stat-value">
-                    <strong><?php echo $stats['rx_mb']; ?> MB</strong>
+                    <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?></span> MB</strong>
                 </div>
                 <div class="progress-bar">
                     <span class="network-traffic" id="rx_mb" style="width: <?php echo $stats['rx_mb'] / 10; ?>%;"></span>
@@ -318,7 +300,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             <div class="progress-container">
                 <div class="progress-label">Network Transmitted (MB)</div>
                 <div class="stat-value">
-                    <strong><?php echo $stats['tx_mb']; ?> MB</strong>
+                    <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?></span> MB</strong>
                 </div>
                 <div class="progress-bar">
                     <span class="network-traffic" id="tx_mb" style="width: <?php echo $stats['tx_mb'] / 10; ?>%;"></span>
