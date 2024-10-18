@@ -97,6 +97,13 @@
                 editor.setTheme("ace/theme/monokai");
                 editor.session.setMode("ace/mode/php");
 
+                // Enable line numbers and word wrap
+                editor.setOptions({
+                    showLineNumbers: true,
+                    showGutter: true,
+                    wrap: true // Enables word wrapping
+                });
+
                 // Update hidden textarea on form submit
                 document.querySelector('form').addEventListener('submit', function () {
                     document.getElementById('file_content').value = editor.getValue();
