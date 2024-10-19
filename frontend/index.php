@@ -207,7 +207,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                             </div>
                             <div class="icon">
                                 <i class="fas fa-image"></i>
-                                <div>Images</div>
+                                <div><a href="upload.php">Upload</a></div>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-shield"></i>
