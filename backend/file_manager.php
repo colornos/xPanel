@@ -150,53 +150,80 @@
                                     </div>
                                 </form>
 
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-                                <script>
-                                    var editor = ace.edit("editor");
-                                    editor.setTheme("ace/theme/monokai");
-                                    editor.session.setMode("ace/mode/php");
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+<script>
+    // Define language modes mapping for Ace Editor
+    const languageModes = {
+        'php': 'ace/mode/php',
+        'html': 'ace/mode/html',
+        'css': 'ace/mode/css',
+        'js': 'ace/mode/javascript',
+        'json': 'ace/mode/json',
+        'py': 'ace/mode/python',
+        'rb': 'ace/mode/ruby',
+        'java': 'ace/mode/java',
+        'c': 'ace/mode/c_cpp',
+        'cpp': 'ace/mode/c_cpp',
+        'h': 'ace/mode/c_cpp',
+        'md': 'ace/mode/markdown',
+        'xml': 'ace/mode/xml',
+        'sql': 'ace/mode/sql',
+        'sh': 'ace/mode/sh' // Added support for shell scripts
+    };
 
-                                    // Enable line numbers and word wrap
-                                    editor.setOptions({
-                                        showLineNumbers: true,
-                                        showGutter: true,
-                                        wrap: true // Enables word wrapping
-                                    });
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
 
-                                    // Update hidden textarea on form submit
-                                    document.querySelector('form').addEventListener('submit', function () {
-                                        document.getElementById('file_content').value = editor.getValue();
-                                    });
+    // Get file extension from the file path
+    const filePath = "<?php echo htmlspecialchars($file_path); ?>";
+    const fileExtension = filePath.split('.').pop();
 
-                                    // Set the initial editor height to fill most of the screen
-                                    function setEditorHeight() {
-                                        var height = window.innerHeight - 100; // Adjust '100' to leave space for header/buttons
-                                        document.getElementById('editor').style.height = height + 'px';
-                                        editor.resize();
-                                    }
+    // Set editor mode based on file extension
+    const mode = languageModes[fileExtension] || 'ace/mode/plain_text'; // default to plain text
+    editor.session.setMode(mode);
 
-                                    setEditorHeight();
-                                    window.addEventListener('resize', setEditorHeight);
+    // Enable line numbers and word wrap
+    editor.setOptions({
+        showLineNumbers: true,
+        showGutter: true,
+        wrap: true // Enables word wrapping
+    });
 
-                                    // Toggle fullscreen mode
-                                    var isFullscreen = false;
-                                    document.getElementById('fullscreen-btn').addEventListener('click', function() {
-                                        var bodyElement = document.body;
-                                        var editorElement = document.getElementById('editor');
-                                        if (isFullscreen) {
-                                            bodyElement.classList.remove('fullscreen');
-                                            editorElement.classList.remove('fullscreen');
-                                            this.textContent = "Toggle Fullscreen";
-                                        } else {
-                                            bodyElement.classList.add('fullscreen');
-                                            editorElement.classList.add('fullscreen');
-                                            this.textContent = "Exit Fullscreen";
-                                        }
-                                        isFullscreen = !isFullscreen;
-                                        editor.resize();
-                                    });
-                                </script>
+    // Update hidden textarea on form submit
+    document.querySelector('form').addEventListener('submit', function () {
+        document.getElementById('file_content').value = editor.getValue();
+    });
 
+    // Set the initial editor height to fill most of the screen
+    function setEditorHeight() {
+        var height = window.innerHeight - 100; // Adjust '100' to leave space for header/buttons
+        document.getElementById('editor').style.height = height + 'px';
+        editor.resize();
+    }
+
+    setEditorHeight();
+    window.addEventListener('resize', setEditorHeight);
+
+    // Toggle fullscreen mode
+    var isFullscreen = false;
+    document.getElementById('fullscreen-btn').addEventListener('click', function() {
+        var bodyElement = document.body;
+        var editorElement = document.getElementById('editor');
+        if (isFullscreen) {
+            bodyElement.classList.remove('fullscreen');
+            editorElement.classList.remove('fullscreen');
+            this.textContent = "Toggle Fullscreen";
+        } else {
+            bodyElement.classList.add('fullscreen');
+            editorElement.classList.add('fullscreen');
+            this.textContent = "Exit Fullscreen";
+        }
+        isFullscreen = !isFullscreen;
+        editor.resize();
+    });
+</script>
+
+                        
                                 <?php
                             } else {
                                 echo "<div class='alert alert-danger'>File not found!</div>";
