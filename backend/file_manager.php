@@ -88,6 +88,25 @@
             width: 100vw;
             border: none;
         }
+        /* Default position: top center */
+        #button-group {
+            position: absolute;
+            top: 00px; /* Adjust to place below the header */
+            right: 10%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        /* Fullscreen mode position: bottom right */
+        .fullscreen #button-group {
+            top: auto;
+            bottom: 20px;
+            right: 10%;
+            left: auto;
+            transform: none;
+        }
     </style>
 </head>
 <body class="vertical-layout vertical-compact-menu material-vertical-layout material-layout 1-column fixed-navbar">
@@ -222,8 +241,6 @@
         editor.resize();
     });
 </script>
-
-                        
                                 <?php
                             } else {
                                 echo "<div class='alert alert-danger'>File not found!</div>";
