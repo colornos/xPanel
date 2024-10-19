@@ -211,7 +211,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-shield"></i>
-                                <div>FTP Accounts</div>
+                                <div><a href="download.php">Download</a></div>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-network-wired"></i>
