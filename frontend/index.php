@@ -264,19 +264,19 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="header-style">General Information</div>
                     <div class="stat">
                         <div class="stat-label">Current User(s):</div>
-                        <div class="stat-value" id="current_user"><?php echo $current_user; ?></div>
+                        <div class="stat-value" id="current_user"><b><?php echo $current_user; ?></b></div>
                     </div>
                     <div class="stat">
                         <div class="stat-label">Primary Domain (Server IP):</div>
-                        <div class="stat-value" id="primary_domain"><?php echo $primary_domain; ?></div>
+                        <div class="stat-value" id="primary_domain"><b><?php echo $primary_domain; ?></b></div>
                     </div>
                     <div class="stat">
                         <div class="stat-label">Home Directory:</div>
-                        <div class="stat-value" id="home_directory"><?php echo $home_directory; ?></div>
+                        <div class="stat-value" id="home_directory"><b><?php echo $home_directory; ?></b></div>
                     </div>
                     <div class="stat">
                         <div class="stat-label">Last Login IP:</div>
-                        <div class="stat-value" id="last_login_ip"><?php echo $last_login_ip; ?></div>
+                        <div class="stat-value" id="last_login_ip"><b><?php echo $last_login_ip; ?></b></div>
                     </div>
 
                     <div class="header-style">Live Statistics</div>
