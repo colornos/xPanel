@@ -117,7 +117,7 @@
                     <div class="section-header">Files</div>
                     <div class="file-list">
                         <?php
-                        $dir = "/var/www/html/";
+                        $dir = "/var/www/html";
 
                         if (isset($_GET['dir'])) {
                             $dir = $_GET['dir'];
