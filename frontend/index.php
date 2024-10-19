@@ -15,31 +15,24 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $last_login_ip = trim($last_login_info);
     $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
-    // Prepare data to match the output of get_system_stats.sh
     $data = [
-        'cpu_usage' => (float) $stats['cpu_usage'], // CPU usage
-        'mem_total' => $stats['mem_total'], // Total memory
-        'mem_used' => $stats['mem_used'], // Used memory
+        'cpu_usage' => (float) $stats['cpu_usage'],
+        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A',
+        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A',
+        'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
+        'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
         'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
-        'disk_usage' => $stats['disk_usage'], // Disk usage percentage
-        'rx_mb' => $stats['rx_mb'], // Network received in MB
-        'tx_mb' => $stats['tx_mb'], // Network transmitted in MB
-        'network_interfaces' => $stats['network_interfaces'], // Network interfaces
-        'open_ports' => $stats['open_ports'], // Open ports and services
-        'uptime' => $stats['uptime'], // System uptime
-        'load_average' => $stats['load_average'], // Load average
-        'process_list' => $stats['process_list'], // Running processes
-        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A', // GPU usage
-        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A', // CPU temperature
-        'block_devices' => $stats['block_devices'], // Block devices
-        'sys_logs' => $stats['sys_logs'], // System logs
-        'logged_in_users' => $current_user, // Current logged-in users
-        'primary_domain' => $primary_domain, // Primary domain (server IP)
-        'home_directory' => $home_directory, // Home directory
-        'last_login_ip' => $last_login_ip // Last login IP
+        'disk_used' => trim($stats['disk_usage'], '%'), // Disk usage as percentage
+        'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
+        'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
+        'current_user' => $current_user,
+        'primary_domain' => $primary_domain,
+        'home_directory' => $home_directory,
+        'last_login_ip' => $last_login_ip,
+        'block_devices' => $stats['block_devices'],
+        'sys_logs' => $stats['sys_logs']
     ];
 
-    // Return the JSON response
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
@@ -393,56 +386,25 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
     <!-- Dynamic Stats Fetching -->
     <script>
-function updateStats() {
-    fetch('?action=get_stats')
-        .then(response => response.json())
-        .then(data => {
-            // Update CPU usage dynamically
-            document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
-            document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
+        function updateStats() {
+            fetch('?action=get_stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stats dynamically
+                    document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
+                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
+                    document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
+                    document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
+                    document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
+                    document.getElementById('block_devices_value').textContent = data.block_devices;
+                    document.getElementById('sys_logs_value').textContent = data.sys_logs;
+                    document.getElementById('current_user').textContent = data.current_user;
+                })
+                .catch(error => console.error('Error fetching stats:', error));
+        }
 
-            // Update memory usage dynamically
-            document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
-            document.getElementById('mem_usage').style.width = data.mem_usage.toFixed(2) + '%';
-
-            // Update disk usage dynamically
-            document.getElementById('disk_usage_value').textContent = data.disk_usage;
-            document.getElementById('disk_usage').style.width = data.disk_usage;
-
-            // Update network traffic (received and transmitted) dynamically
-            document.getElementById('rx_mb_value').textContent = (data.rx_mb ? data.rx_mb.toFixed(2) : 'N/A') + ' MB';
-            document.getElementById('tx_mb_value').textContent = (data.tx_mb ? data.tx_mb.toFixed(2) : 'N/A') + ' MB';
-
-            // Update block devices dynamically
-            document.getElementById('block_devices_value').textContent = data.block_devices || 'N/A';
-
-            // Update system logs dynamically
-            document.getElementById('sys_logs_value').textContent = data.sys_logs || 'No logs available';
-
-            // Update current logged-in users dynamically
-            document.getElementById('current_user').textContent = data.logged_in_users || 'No users logged in';
-
-            // Update additional information dynamically if needed
-            document.getElementById('primary_domain').textContent = data.primary_domain || 'N/A';
-            document.getElementById('home_directory').textContent = data.home_directory || 'N/A';
-            document.getElementById('last_login_ip').textContent = data.last_login_ip || 'N/A';
-
-            // Update GPU usage dynamically (if available)
-            document.getElementById('gpu_usage_value').textContent = data.gpu_usage !== 'N/A' ? data.gpu_usage : 'N/A';
-
-            // Update CPU temperature dynamically (if available)
-            document.getElementById('cpu_temp_value').textContent = data.cpu_temp !== 'N/A' ? data.cpu_temp : 'N/A';
-
-            // Additional values like uptime, load average, process list
-            document.getElementById('uptime_value').textContent = data.uptime || 'N/A';
-            document.getElementById('load_average_value').textContent = data.load_average || 'N/A';
-            document.getElementById('process_list_value').textContent = data.process_list || 'N/A';
-        })
-        .catch(error => console.error('Error fetching stats:', error));
-}
-
-// Fetch stats every 5 seconds
-setInterval(updateStats, 5000);
+        // Fetch stats every 5 seconds
+        setInterval(updateStats, 5000);
     </script>
     <!-- END: Page JS-->
 </body>
