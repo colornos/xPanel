@@ -53,8 +53,8 @@ sudo chown -R www-data:www-data /var/www/html/xpanel/
 cat <<EOL | sudo tee /var/www/html/xpanel/get_system_stats.sh
 #!/bin/bash
 
-# Get CPU Load
-cpu_load=\$(uptime | awk -F'load average:' '{ print \$2 }' | sed 's/,//g')
+# Get CPU Load and Usage (from mpstat)
+cpu_usage=\$(mpstat 1 1 | awk '/Average:/ { print 100 - \$12 }')
 
 # Get Memory Usage
 mem_total=\$(grep MemTotal /proc/meminfo | awk '{print \$2}')
@@ -71,8 +71,20 @@ tx_bytes=\$(cat /sys/class/net/\$(ip route show default | awk '/default/ {print 
 rx_mb=\$(awk "BEGIN {print \$rx_bytes/1024/1024}")
 tx_mb=\$(awk "BEGIN {print \$tx_bytes/1024/1024}")
 
-# Output JSON format
-echo "{ \\"cpu_load\\": \\"\$cpu_load\\", \\"mem_total\\": \\"\$mem_total\\", \\"mem_used\\": \\"\$mem_used\\", \\"mem_usage\\": \\"\$mem_usage\\", \\"disk_usage\\": \\"\$disk_usage\\", \\"rx_mb\\": \\"\$rx_mb\\", \\"tx_mb\\": \\"\$tx_mb\\" }"
+# Get the current logged-in users (from who)
+logged_in_users=\$(who | awk '{print \$1}' | sort | uniq | paste -sd "," -)
+
+# Output as JSON
+echo "{ 
+    \\"cpu_usage\\": \\"\$cpu_usage\\", 
+    \\"mem_total\\": \\"\$((mem_total / 1024)) MB\\", 
+    \\"mem_used\\": \\"\$((mem_used / 1024)) MB\\", 
+    \\"mem_usage\\": \\"\$mem_usage\\", 
+    \\"disk_usage\\": \\"\$disk_usage\\", 
+    \\"rx_mb\\": \\"\$rx_mb MB\\", 
+    \\"tx_mb\\": \\"\$tx_mb MB\\", 
+    \\"logged_in_users\\": \\"\$logged_in_users\\" 
+}"
 EOL
 
 # Make the script executable
