@@ -89,14 +89,16 @@ $files = listFiles($upload_dir);
     
     <!-- Original Styling -->
     <style>
-        .dropzone {
-            border: 2px dashed #007bff;
-            border-radius: 5px;
-            padding: 30px;
-            text-align: center;
-            color: #007bff;
-            cursor: pointer;
-        }
+.dropzone {
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    padding: 50px; /* Increase padding for more internal space */
+    text-align: center;
+    color: #007bff;
+    cursor: pointer;
+    width: 100%; /* Expand width to fit the container */
+    min-height: 300px; /* Set a larger minimum height */
+}
         .file-preview {
             margin-top: 15px;
         }
@@ -144,7 +146,7 @@ $files = listFiles($upload_dir);
     </nav>
     <!-- END: Header-->
 
-    <div class="app-content content" style="margin-top: 80px;"> <!-- Adjusted margin to avoid header overlap -->
+    <div class="app-content content"> <!-- Adjusted margin to avoid header overlap -->
         <div class="content-wrapper">
             <div class="content-body">
                 <!-- File Upload Form -->
