@@ -393,25 +393,64 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
     <!-- Dynamic Stats Fetching -->
     <script>
-        function updateStats() {
-            fetch('?action=get_stats')
-                .then(response => response.json())
-                .then(data => {
-                    // Update stats dynamically
-                    document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
-                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
-                    document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
-                    document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
-                    document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
-                    document.getElementById('block_devices_value').textContent = data.block_devices;
-                    document.getElementById('sys_logs_value').textContent = data.sys_logs;
-                    document.getElementById('current_user').textContent = data.current_user;
-                })
-                .catch(error => console.error('Error fetching stats:', error));
-        }
+function updateStats() {
+    fetch('?action=get_stats')
+        .then(response => response.json())
+        .then(data => {
+            // Update CPU usage dynamically
+            document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
+            document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
 
-        // Fetch stats every 5 seconds
-        setInterval(updateStats, 5000);
+            // Update memory usage dynamically
+            document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
+            document.getElementById('mem_usage').style.width = data.mem_usage.toFixed(2) + '%';
+
+            // Update disk usage dynamically
+            document.getElementById('disk_usage_value').textContent = data.disk_usage;
+            document.getElementById('disk_usage').style.width = data.disk_usage;
+
+            // Update network traffic (received and transmitted) dynamically
+            document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
+            document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
+
+            // Update block devices dynamically
+            document.getElementById('block_devices_value').textContent = data.block_devices;
+
+            // Update system logs dynamically
+            document.getElementById('sys_logs_value').textContent = data.sys_logs;
+
+            // Update current logged-in users dynamically
+            document.getElementById('current_user').textContent = data.logged_in_users;
+
+            // Update additional information dynamically if needed
+            document.getElementById('primary_domain').textContent = data.primary_domain;
+            document.getElementById('home_directory').textContent = data.home_directory;
+            document.getElementById('last_login_ip').textContent = data.last_login_ip;
+
+            // Update GPU usage dynamically (if available)
+            if (data.gpu_usage !== 'N/A') {
+                document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
+            } else {
+                document.getElementById('gpu_usage_value').textContent = 'N/A';
+            }
+
+            // Update CPU temperature dynamically (if available)
+            if (data.cpu_temp !== 'N/A') {
+                document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
+            } else {
+                document.getElementById('cpu_temp_value').textContent = 'N/A';
+            }
+
+            // You can also update other values like network interfaces, open ports, uptime, etc.
+            document.getElementById('uptime_value').textContent = data.uptime;
+            document.getElementById('load_average_value').textContent = data.load_average;
+            document.getElementById('process_list_value').textContent = data.process_list;
+        })
+        .catch(error => console.error('Error fetching stats:', error));
+}
+
+// Fetch stats every 5 seconds
+setInterval(updateStats, 5000);
     </script>
     <!-- END: Page JS-->
 </body>
