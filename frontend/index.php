@@ -203,7 +203,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <div class="icons-grid">
                             <div class="icon">
                                 <i class="fas fa-folder"></i>
-                                <div><a href="file_manager.php">File Manager</a></div>
+                                <div><a href="file_manager.php">Files</a></div>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-upload"></i>
