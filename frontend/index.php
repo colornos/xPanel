@@ -15,24 +15,31 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $last_login_ip = trim($last_login_info);
     $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
+    // Prepare data to match the output of get_system_stats.sh
     $data = [
-        'cpu_usage' => (float) $stats['cpu_usage'],
-        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A',
-        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A',
-        'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
-        'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
+        'cpu_usage' => (float) $stats['cpu_usage'], // CPU usage
+        'mem_total' => $stats['mem_total'], // Total memory
+        'mem_used' => $stats['mem_used'], // Used memory
         'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
-        'disk_used' => trim($stats['disk_usage'], '%'), // Disk usage as percentage
-        'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
-        'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
-        'current_user' => $current_user,
-        'primary_domain' => $primary_domain,
-        'home_directory' => $home_directory,
-        'last_login_ip' => $last_login_ip,
-        'block_devices' => $stats['block_devices'],
-        'sys_logs' => $stats['sys_logs']
+        'disk_usage' => $stats['disk_usage'], // Disk usage percentage
+        'rx_mb' => $stats['rx_mb'], // Network received in MB
+        'tx_mb' => $stats['tx_mb'], // Network transmitted in MB
+        'network_interfaces' => $stats['network_interfaces'], // Network interfaces
+        'open_ports' => $stats['open_ports'], // Open ports and services
+        'uptime' => $stats['uptime'], // System uptime
+        'load_average' => $stats['load_average'], // Load average
+        'process_list' => $stats['process_list'], // Running processes
+        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A', // GPU usage
+        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A', // CPU temperature
+        'block_devices' => $stats['block_devices'], // Block devices
+        'sys_logs' => $stats['sys_logs'], // System logs
+        'logged_in_users' => $current_user, // Current logged-in users
+        'primary_domain' => $primary_domain, // Primary domain (server IP)
+        'home_directory' => $home_directory, // Home directory
+        'last_login_ip' => $last_login_ip // Last login IP
     ];
 
+    // Return the JSON response
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
