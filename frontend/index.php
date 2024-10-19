@@ -8,15 +8,40 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
     $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
     $stats = json_decode($system_stats, true);
 
-    // Output the JSON response for the frontend
+    // Prepare additional system stats
+    $current_user = $stats['logged_in_users'] ?? 'No users logged in';  // Retrieve logged-in users from shell script
+    $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
+
+    $data = [
+        'cpu_usage' => (float) $stats['cpu_usage'],
+        'mem_total' => $stats['mem_total'],
+        'mem_used' => $stats['mem_used'],
+        'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
+        'disk_usage' => trim($stats['disk_usage'], '%'), // Disk usage as percentage
+        'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
+        'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
+        'network_interfaces' => $stats['network_interfaces'],
+        'open_ports' => $stats['open_ports'],
+        'uptime' => $stats['uptime'],
+        'load_average' => $stats['load_average'],
+        'process_list' => $stats['process_list'],
+        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A',
+        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A',
+        'block_devices' => $stats['block_devices'],
+        'sys_logs' => $stats['sys_logs'],
+        'logged_in_users' => $current_user
+    ];
+
     header('Content-Type: application/json');
-    echo json_encode($stats);
+    echo json_encode($data);
     exit;
 }
 
 // Fetch data for the initial page load
 $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
 $stats = json_decode($system_stats, true);
+$current_user = $stats['logged_in_users'] ?? 'No users logged in';  // Retrieve logged-in users from shell script
+$primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +88,7 @@ $stats = json_decode($system_stats, true);
         .mem-usage { background-color: #3498db; }
         .disk-usage { background-color: #FF6C6C; }
         .network-traffic { background-color: #27ae60; }
+        .section { margin-bottom: 20px; }
     </style>
 </head>
 
@@ -140,8 +166,8 @@ $stats = json_decode($system_stats, true);
                 <div class="sidebar">
                     <div class="header-style">General Information</div>
                     <div class="stat">
-                        <div class="stat-label">Primary Domain (Server IP):</div>
-                        <div class="stat-value" id="primary_domain"><b><?php echo trim(shell_exec("hostname -I | awk '{print $1}'")); ?></b></div>
+                        <div class="stat-label">Logged-in Users:</div>
+                        <div class="stat-value"><b id="logged_in_users"><?php echo $current_user; ?></b></div>
                     </div>
 
                     <div class="header-style">Live Statistics</div>
@@ -173,40 +199,50 @@ $stats = json_decode($system_stats, true);
                         </div>
                     </div>
 
-                    <!-- Disk Usage -->
-                    <div class="progress-container">
-                        <div class="progress-label">Disk Usage</div>
-                        <div class="stat-value">
-                            <span id="disk_usage_value"><?php echo $stats['disk_usage']; ?></span> used
-                        </div>
-                        <div class="progress-bar">
-                            <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>;"></span>
-                        </div>
-                    </div>
-
                     <!-- Memory Usage -->
                     <div class="progress-container">
                         <div class="progress-label">Memory Usage</div>
                         <div class="stat-value">
-                            <strong><span id="mem_usage_value"><?php echo round($stats['mem_usage'], 2); ?></span>%</strong>
+                            <strong><span id="mem_usage_value"><?php echo $stats['mem_used'] . ' / ' . $stats['mem_total']; ?></span> (<?php echo $stats['mem_usage']; ?>%)</strong>
                         </div>
                         <div class="progress-bar">
-                            <span class="mem-usage" id="mem_usage" style="width: <?php echo round($stats['mem_usage'], 2); ?>%;"></span>
+                            <span class="mem-usage" id="mem_usage" style="width: <?php echo $stats['mem_usage']; ?>%;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Disk Usage -->
+                    <div class="progress-container">
+                        <div class="progress-label">Disk Usage</div>
+                        <div class="stat-value">
+                            <span id="disk_usage_value"><?php echo $stats['disk_usage']; ?>% used</span>
+                        </div>
+                        <div class="progress-bar">
+                            <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_usage']; ?>%;"></span>
                         </div>
                     </div>
 
                     <!-- Network Traffic -->
                     <div class="progress-container">
-                        <div class="progress-label">Network Received (MB)</div>
+                        <div class="progress-label">Network Received</div>
                         <div class="stat-value">
-                            <strong><span id="rx_mb_value"><?php echo round($stats['rx_mb'], 2); ?></span> MB</strong>
+                            <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?></span> MB</strong>
                         </div>
                     </div>
                     <div class="progress-container">
-                        <div class="progress-label">Network Transmitted (MB)</div>
+                        <div class="progress-label">Network Transmitted</div>
                         <div class="stat-value">
-                            <strong><span id="tx_mb_value"><?php echo round($stats['tx_mb'], 2); ?></span> MB</strong>
+                            <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?></span> MB</strong>
                         </div>
+                    </div>
+
+                    <!-- Uptime and Load Average -->
+                    <div class="stat">
+                        <div class="stat-label">System Uptime:</div>
+                        <div class="stat-value"><b id="uptime"><?php echo $stats['uptime']; ?></b></div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Load Average:</div>
+                        <div class="stat-value"><b id="load_average"><?php echo $stats['load_average']; ?></b></div>
                     </div>
                 </div>
             </div>
@@ -228,14 +264,18 @@ $stats = json_decode($system_stats, true);
 
                     document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
 
-                    document.getElementById('disk_usage_value').textContent = data.disk_usage;
-                    document.getElementById('disk_usage').style.width = data.disk_usage;
-
-                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
+                    document.getElementById('mem_usage_value').textContent = data.mem_used + ' / ' + data.mem_total + ' (' + data.mem_usage.toFixed(2) + '%)';
                     document.getElementById('mem_usage').style.width = data.mem_usage + '%';
+
+                    document.getElementById('disk_usage_value').textContent = data.disk_usage + '% used';
+                    document.getElementById('disk_usage').style.width = data.disk_usage + '%';
 
                     document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
                     document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
+
+                    document.getElementById('uptime').textContent = data.uptime;
+                    document.getElementById('load_average').textContent = data.load_average;
+                    document.getElementById('logged_in_users').textContent = data.logged_in_users;
                 })
                 .catch(error => console.error('Error fetching stats:', error));
         }
