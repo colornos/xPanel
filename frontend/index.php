@@ -206,11 +206,11 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                                 <div><a href="file_manager.php">File Manager</a></div>
                             </div>
                             <div class="icon">
-                                <i class="fas fa-image"></i>
+                                <i class="fas fa-upload"></i>
                                 <div><a href="upload.php">Upload</a></div>
                             </div>
                             <div class="icon">
-                                <i class="fas fa-user-shield"></i>
+                                <i class="fas fa-download"></i>
                                 <div><a href="download.php">Download</a></div>
                             </div>
                             <div class="icon">
