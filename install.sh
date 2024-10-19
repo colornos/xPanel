@@ -65,46 +65,49 @@ mem_usage=\$(awk "BEGIN {print \$mem_used/\$mem_total * 100}")
 # Get Disk Usage
 disk_usage=\$(df -h / | grep / | awk '{print \$5}')
 
-# Get Network Traffic
+# Get Detailed Disk I/O (from iotop)
+disk_io=\$(iotop -b -n 1 | head -n 10)
+
+# Get Network Traffic (from ifconfig/ip)
 rx_bytes=\$(cat /sys/class/net/\$(ip route show default | awk '/default/ {print \$5}')/statistics/rx_bytes)
 tx_bytes=\$(cat /sys/class/net/\$(ip route show default | awk '/default/ {print \$5}')/statistics/tx_bytes)
 rx_mb=\$(awk "BEGIN {print \$rx_bytes/1024/1024}")
 tx_mb=\$(awk "BEGIN {print \$tx_bytes/1024/1024}")
 
-# Get Network Interface Details
+# Get Network Interface Details (from ifconfig/ip)
 network_interfaces=\$(ip -br a)
 
-# Get Open Ports and Services
+# Get Open Ports and Services (from netstat)
 open_ports=\$(netstat -tuln)
 
-# Get System Uptime and Load Average
+# Get System Uptime and Load Average (from uptime)
 uptime=\$(uptime -p)
 load_average=\$(uptime | awk -F 'load average: ' '{print \$2}')
 
-# Get Running Processes
+# Get Running Processes (from ps aux)
 process_list=\$(ps aux --sort=-%cpu | head -n 10)
 
-# Get GPU Usage (if NVIDIA GPU is present)
+# Get GPU Usage (if NVIDIA GPU is present, from nvidia-smi)
 if command -v nvidia-smi &> /dev/null; then
     gpu_usage=\$(nvidia-smi --query-gpu=utilization.gpu,memory.total,memory.used --format=csv,noheader,nounits)
 else
     gpu_usage="N/A"
 fi
 
-# Get CPU Temperature (if sensors are available)
+# Get CPU Temperature (from sensors)
 if command -v sensors &> /dev/null; then
     cpu_temp=\$(sensors | grep 'Core 0' | awk '{print \$3}')
 else
     cpu_temp="N/A"
 fi
 
-# Get Block Devices
+# Get Block Devices (from lsblk)
 block_devices=\$(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT)
 
-# Get System Logs (last 10 entries)
+# Get System Logs (from journalctl)
 sys_logs=\$(journalctl -n 10)
 
-# Get the current logged-in users
+# Get the current logged-in users (from who)
 logged_in_users=\$(who | awk '{print \$1}' | sort | uniq | paste -sd "," -)
 
 # Output as JSON
