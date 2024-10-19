@@ -410,41 +410,33 @@ function updateStats() {
             document.getElementById('disk_usage').style.width = data.disk_usage;
 
             // Update network traffic (received and transmitted) dynamically
-            document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
-            document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
+            document.getElementById('rx_mb_value').textContent = (data.rx_mb ? data.rx_mb.toFixed(2) : 'N/A') + ' MB';
+            document.getElementById('tx_mb_value').textContent = (data.tx_mb ? data.tx_mb.toFixed(2) : 'N/A') + ' MB';
 
             // Update block devices dynamically
-            document.getElementById('block_devices_value').textContent = data.block_devices;
+            document.getElementById('block_devices_value').textContent = data.block_devices || 'N/A';
 
             // Update system logs dynamically
-            document.getElementById('sys_logs_value').textContent = data.sys_logs;
+            document.getElementById('sys_logs_value').textContent = data.sys_logs || 'No logs available';
 
             // Update current logged-in users dynamically
-            document.getElementById('current_user').textContent = data.logged_in_users;
+            document.getElementById('current_user').textContent = data.logged_in_users || 'No users logged in';
 
             // Update additional information dynamically if needed
-            document.getElementById('primary_domain').textContent = data.primary_domain;
-            document.getElementById('home_directory').textContent = data.home_directory;
-            document.getElementById('last_login_ip').textContent = data.last_login_ip;
+            document.getElementById('primary_domain').textContent = data.primary_domain || 'N/A';
+            document.getElementById('home_directory').textContent = data.home_directory || 'N/A';
+            document.getElementById('last_login_ip').textContent = data.last_login_ip || 'N/A';
 
             // Update GPU usage dynamically (if available)
-            if (data.gpu_usage !== 'N/A') {
-                document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
-            } else {
-                document.getElementById('gpu_usage_value').textContent = 'N/A';
-            }
+            document.getElementById('gpu_usage_value').textContent = data.gpu_usage !== 'N/A' ? data.gpu_usage : 'N/A';
 
             // Update CPU temperature dynamically (if available)
-            if (data.cpu_temp !== 'N/A') {
-                document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
-            } else {
-                document.getElementById('cpu_temp_value').textContent = 'N/A';
-            }
+            document.getElementById('cpu_temp_value').textContent = data.cpu_temp !== 'N/A' ? data.cpu_temp : 'N/A';
 
-            // You can also update other values like network interfaces, open ports, uptime, etc.
-            document.getElementById('uptime_value').textContent = data.uptime;
-            document.getElementById('load_average_value').textContent = data.load_average;
-            document.getElementById('process_list_value').textContent = data.process_list;
+            // Additional values like uptime, load average, process list
+            document.getElementById('uptime_value').textContent = data.uptime || 'N/A';
+            document.getElementById('load_average_value').textContent = data.load_average || 'N/A';
+            document.getElementById('process_list_value').textContent = data.process_list || 'N/A';
         })
         .catch(error => console.error('Error fetching stats:', error));
 }
