@@ -5,6 +5,8 @@ echo "Starting xPanel Installation..."
 # Update and upgrade the system
 sudo apt update && sudo apt upgrade -y
 
+sudo apt install net-tools
+
 # Install Apache, PHP, MySQL, SSH, Certbot, phpMyAdmin, Shellinabox, and xRDP
 sudo apt install apache2 php libapache2-mod-php mysql-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xdg-utils shellinabox xrdp -y
 
