@@ -201,34 +201,13 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="section">
                         <div class="header-style">Files</div>
                         <div class="icons-grid">
-                            <div class="icon">
-                                <i class="fas fa-folder"></i>
-                                <div><a href="file_manager.php">Files</a></div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-upload"></i>
-                                <div><a href="upload.php">Upload</a></div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-download"></i>
-                                <div><a href="download.php">Download</a></div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-network-wired"></i>
-                                <div>FTP Connections</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-user-lock"></i>
-                                <div>Directory Privacy</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-hdd"></i>
-                                <div>Disk Usage</div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-database"></i>
-                                <div>Backup</div>
-                            </div>
+                            <div class="icon"><a href="file_manager.php"><i class="fas fa-folder"></i><div>Files</div></a></div>
+                            <div class="icon"><a href="upload.php"><i class="fas fa-upload"></i><div>Upload</div></a></div>
+                            <div class="icon"><a href="download.php"><i class="fas fa-download"></i><div>Download</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-network-wired"></i><div>FTP Connections</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-user-lock"></i><div>Directory Privacy</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-hdd"></i><div>Disk Usage</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-database"></i><div>Backup</div></a></div>
                         </div>
                     </div>
 
@@ -236,14 +215,8 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="section">
                         <div class="header-style">Databases</div>
                         <div class="icons-grid">
-                            <div class="icon">
-                                <i class="fas fa-database"></i>
-                                <div><a href="/phpmyadmin" target="_blank">phpMyAdmin</a></div>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-server"></i>
-                                <div><a href="database.php">MySQL Databases</a></div>
-                            </div>
+                            <div class="icon"><a href="/phpmyadmin" target="_blank"><i class="fas fa-database"></i><div>phpMyAdmin</div></a></div>
+                            <div class="icon"><a href="database.php"><i class="fas fa-server"></i><div>MySQL Databases</div></a></div>
                         </div>
                     </div>
 
@@ -251,10 +224,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="section">
                         <div class="header-style">Terminal</div>
                         <div class="icons-grid">
-                            <div class="icon">
-                                <i class="fas fa-terminal"></i>
-                                <div><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank">Terminal</a></div>
-                            </div>
+                            <div class="icon"><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank"><i class="fas fa-terminal"></i><div>Terminal</div></a></div>
                         </div>
                     </div>
                 </div>
