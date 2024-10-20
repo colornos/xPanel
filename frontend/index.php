@@ -374,7 +374,7 @@ function updateStats() {
             document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
             document.getElementById('current_user').textContent = data.current_user;
             document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
-            document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
+            document.getElementById('cpu_temp_value').textContent = data.cpu_temp + ' °F';
             // Update progress bars
             document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
             document.getElementById('mem_usage').style.width = data.mem_usage + '%';
