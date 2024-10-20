@@ -163,10 +163,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
         .progress-bar span.yellow { background-color: #f1c40f; } /* Yellow */
         .progress-bar span.orange { background-color: #e67e22; } /* Orange */
         .progress-bar span.red { background-color: #e74c3c; } /* Red */
-        .cpu-load { background-color: #f39c12; }
+        .cpu-load { background-color: #3498db; }
         .mem-usage { background-color: #3498db; }
-        .disk-usage { background-color: #FF6C6C; }
-        .network-traffic { background-color: #27ae60; }
+        .disk-usage { background-color: #3498db; }
+        .network-traffic { background-color: #3498db; }
     </style>
 </head>
 <!-- END: Head-->
