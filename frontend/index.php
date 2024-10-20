@@ -201,9 +201,8 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                             <div class="icon"><a href="file_manager.php"><i class="fas fa-folder"></i><div>Files</div></a></div>
                             <div class="icon"><a href="upload.php"><i class="fas fa-upload"></i><div>Upload</div></a></div>
                             <div class="icon"><a href="download.php"><i class="fas fa-download"></i><div>Download</div></a></div>
-                            <div class="icon"><a href="#"><i class="fas fa-network-wired"></i><div>FTP Connections</div></a></div>
-                            <div class="icon"><a href="#"><i class="fas fa-user-lock"></i><div>Directory Privacy</div></a></div>
-                            <div class="icon"><a href="#"><i class="fas fa-hdd"></i><div>Disk Usage</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-network-wired"></i><div>MYSQL Connections</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-hdd"></i><div>Disk Info</div></a></div>
                             <div class="icon"><a href="#"><i class="fas fa-database"></i><div>Backup</div></a></div>
                         </div>
                     </div>
