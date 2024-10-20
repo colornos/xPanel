@@ -10,6 +10,11 @@ handle_error() {
   fi
 }
 
+# Ensure k10temp module is loaded
+if ! lsmod | grep -q "k10temp"; then
+  sudo modprobe k10temp
+fi
+
 # Get CPU usage
 cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
 cpu_usage=$(handle_error "$cpu_usage")
@@ -18,9 +23,15 @@ cpu_usage=$(handle_error "$cpu_usage")
 gpu_usage=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null)
 gpu_usage=$(handle_error "$gpu_usage")
 
-# Get CPU temperature (if applicable)
-cpu_temp=$(sensors | grep 'Package id 0:' | awk '{print $4}' | sed 's/+//g')
-cpu_temp=$(handle_error "$cpu_temp")
+# Get CPU temperature in Celsius using the sensors command
+cpu_temp=$(sensors | grep 'k10temp-pci-00c3' -A 3 | grep 'temp1:' | awk '{print $2}' | sed 's/[+°C]//g')
+
+# Convert to Fahrenheit if CPU temperature is found
+if [ -n "$cpu_temp" ]; then
+  cpu_temp=$(awk "BEGIN {printf \"%.2f\", ($cpu_temp * 9/5) + 32}")
+else
+  cpu_temp="N/A"
+fi
 
 # Get memory usage
 mem_total=$(grep MemTotal /proc/meminfo | awk '{print $2}')
