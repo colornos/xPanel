@@ -159,6 +159,10 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
             left: 0;
             top: 0;
         }
+        .progress-bar span.green { background-color: #27ae60; } /* Green */
+        .progress-bar span.yellow { background-color: #f1c40f; } /* Yellow */
+        .progress-bar span.orange { background-color: #e67e22; } /* Orange */
+        .progress-bar span.red { background-color: #e74c3c; } /* Red */
         .cpu-load { background-color: #f39c12; }
         .mem-usage { background-color: #3498db; }
         .disk-usage { background-color: #FF6C6C; }
@@ -366,7 +370,7 @@ function updateStats() {
                 return;
             }
 
-            // Update stats dynamically
+            // Update stat values
             document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
             document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
             document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
@@ -375,14 +379,34 @@ function updateStats() {
             document.getElementById('current_user').textContent = data.current_user;
             document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
             document.getElementById('cpu_temp_value').textContent = data.cpu_temp + ' °F';
-            // Update progress bars
-            document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
-            document.getElementById('mem_usage').style.width = data.mem_usage + '%';
-            document.getElementById('disk_usage').style.width = data.disk_used + '%';
+
+            // Update progress bars and colors
+            updateProgressBar('cpu_usage', data.cpu_usage);
+            updateProgressBar('mem_usage', data.mem_usage);
+            updateProgressBar('disk_usage', data.disk_used);
         })
         .catch(error => {
             console.error('Error fetching system stats:', error);
         });
+}
+
+function updateProgressBar(id, value) {
+    const element = document.getElementById(id);
+    element.style.width = value + '%';
+
+    // Reset classes
+    element.classList.remove('green', 'yellow', 'orange', 'red');
+
+    // Apply color based on value
+    if (value <= 50) {
+        element.classList.add('green');
+    } else if (value <= 70) {
+        element.classList.add('yellow');
+    } else if (value <= 90) {
+        element.classList.add('orange');
+    } else {
+        element.classList.add('red');
+    }
 }
 
 // Fetch stats every 5 seconds
