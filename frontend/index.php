@@ -4,33 +4,30 @@ session_start();
 
 // Check if this is an AJAX request for live stats
 if (isset($_GET['action']) && $_GET['action'] == 'get_stats') {
-    // Execute the bash script to get system stats
+    // Run the bash script
     $system_stats = shell_exec('sudo /var/www/html/xpanel/get_system_stats.sh');
+    
+    // Decode the JSON output
     $stats = json_decode($system_stats, true);
 
-    // Prepare additional system stats
-    $current_user = $stats['logged_in_users'] ?? 'No users logged in';  // Retrieve logged-in users from shell script
-    $home_directory = trim(shell_exec('echo ~' . $current_user));
-    $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
-    $last_login_ip = trim($last_login_info);
-    $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
+    // Check if JSON decoding was successful
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['error' => 'Failed to parse JSON from system stats']);
+        exit;
+    }
 
+    // Prepare data for the frontend
     $data = [
         'cpu_usage' => (float) $stats['cpu_usage'],
-        'gpu_usage' => $stats['gpu_usage'] ?? 'N/A',
-        'cpu_temp' => $stats['cpu_temp'] ?? 'N/A',
-        'mem_total' => (int) $stats['mem_total'] / 1024, // Convert to MB
-        'mem_used' => (int) $stats['mem_used'] / 1024, // Convert to MB
-        'mem_usage' => (float) $stats['mem_usage'], // Memory usage percentage
-        'disk_used' => trim($stats['disk_usage'], '%'), // Disk usage as percentage
-        'rx_mb' => (float) $stats['rx_mb'], // Network received (MB)
-        'tx_mb' => (float) $stats['tx_mb'], // Network transmitted (MB)
-        'current_user' => $current_user,
-        'primary_domain' => $primary_domain,
-        'home_directory' => $home_directory,
-        'last_login_ip' => $last_login_ip,
-        'block_devices' => $stats['block_devices'],
-        'sys_logs' => $stats['sys_logs']
+        'gpu_usage' => $stats['gpu_usage'],
+        'cpu_temp' => $stats['cpu_temp'],
+        'mem_total' => round($stats['mem_total'] / 1024), // Convert to MB
+        'mem_used' => round($stats['mem_used'] / 1024), // Convert to MB
+        'mem_usage' => (float) $stats['mem_usage'],
+        'disk_used' => (int) $stats['disk_usage'],
+        'rx_mb' => (float) $stats['rx_mb'],
+        'tx_mb' => (float) $stats['tx_mb'],
+        'current_user' => $stats['logged_in_users']
     ];
 
     header('Content-Type: application/json');
@@ -255,7 +252,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="progress-container">
                         <div class="progress-label">CPU Usage</div>
                         <div class="stat-value">
-                            <strong><span id="cpu_usage_value"><?php echo $stats['cpu_usage']; ?></span>%</strong>
+                            <strong><span id="cpu_usage_value"><?php echo $stats['cpu_usage']; ?></span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="cpu-load" id="cpu_usage" style="width: <?php echo $stats['cpu_usage']; ?>%;"></span>
@@ -282,7 +279,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="progress-container">
                         <div class="progress-label">Disk Usage</div>
                         <div class="stat-value">
-                            <span id="disk_usage_value"><?php echo $stats['disk_used']; ?>%</span> used
+                            <span id="disk_usage_value"><?php echo $stats['disk_used']; ?></span> used
                         </div>
                         <div class="progress-bar">
                             <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_used']; ?>%;"></span>
@@ -295,7 +292,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <div class="stat-value">
                             <?php echo round($stats['mem_used'], 2) . ' MB / ' . round($stats['mem_total'], 2) . ' MB'; ?>
                             <br>
-                            <strong><span id="mem_usage_value"><?php echo $stats['mem_usage']; ?></span>%</strong>
+                            <strong><span id="mem_usage_value"><?php echo $stats['mem_usage']; ?></span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="mem-usage" id="mem_usage" style="width: <?php echo $stats['mem_usage']; ?>%;"></span>
@@ -306,7 +303,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="progress-container">
                         <div class="progress-label">Network Received (MB)</div>
                         <div class="stat-value">
-                            <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?></span> MB</strong>
+                            <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?></span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="network-traffic" id="rx_mb" style="width: <?php echo $stats['rx_mb'] / 10; ?>%;"></span>
@@ -317,7 +314,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="progress-container">
                         <div class="progress-label">Network Transmitted (MB)</div>
                         <div class="stat-value">
-                            <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?></span> MB</strong>
+                            <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?></span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="network-traffic" id="tx_mb" style="width: <?php echo $stats['tx_mb'] / 10; ?>%;"></span>
@@ -356,25 +353,42 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
 
     <!-- Dynamic Stats Fetching -->
     <script>
-        function updateStats() {
-            fetch('?action=get_stats')
-                .then(response => response.json())
-                .then(data => {
-                    // Update stats dynamically
-                    document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
-                    document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
-                    document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
-                    document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
-                    document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
-                    document.getElementById('block_devices_value').textContent = data.block_devices;
-                    document.getElementById('sys_logs_value').textContent = data.sys_logs;
-                    document.getElementById('current_user').textContent = data.current_user;
-                })
-                .catch(error => console.error('Error fetching stats:', error));
-        }
+function updateStats() {
+    fetch('?action=get_stats')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch system stats');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
 
-        // Fetch stats every 5 seconds
-        setInterval(updateStats, 5000);
+            // Update stats dynamically
+            document.getElementById('cpu_usage_value').textContent = data.cpu_usage + '%';
+            document.getElementById('mem_usage_value').textContent = data.mem_usage.toFixed(2) + '%';
+            document.getElementById('disk_usage_value').textContent = data.disk_used + '%';
+            document.getElementById('rx_mb_value').textContent = data.rx_mb.toFixed(2) + ' MB';
+            document.getElementById('tx_mb_value').textContent = data.tx_mb.toFixed(2) + ' MB';
+            document.getElementById('current_user').textContent = data.current_user;
+            document.getElementById('gpu_usage_value').textContent = data.gpu_usage;
+            document.getElementById('cpu_temp_value').textContent = data.cpu_temp;
+            // Update progress bars
+            document.getElementById('cpu_usage').style.width = data.cpu_usage + '%';
+            document.getElementById('mem_usage').style.width = data.mem_usage + '%';
+            document.getElementById('disk_usage').style.width = data.disk_used + '%';
+        })
+        .catch(error => {
+            console.error('Error fetching system stats:', error);
+        });
+}
+
+// Fetch stats every 5 seconds
+setInterval(updateStats, 5000);
+
     </script>
     <!-- END: Page JS-->
 </body>
