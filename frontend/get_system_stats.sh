@@ -48,14 +48,6 @@ tx_mb=$(handle_error "$tx_mb")
 logged_in_users=$(who | awk '{print $1}' | sort | uniq | paste -sd "," -)
 logged_in_users=$(handle_error "$logged_in_users")
 
-# Get block devices
-block_devices=$(lsblk -d -o NAME,SIZE | sed '1d' | awk '{print $1 " (" $2 ")"}' | paste -sd ", " -)
-block_devices=$(handle_error "$block_devices")
-
-# Get system logs (last 5 entries)
-sys_logs=$(tail -n 5 /var/log/syslog | tr '\n' ' ')
-sys_logs=$(handle_error "$sys_logs")
-
 # Output JSON
 echo '{
   "cpu_usage": "'$cpu_usage'",
@@ -67,7 +59,5 @@ echo '{
   "disk_usage": "'$disk_usage'",
   "rx_mb": "'$rx_mb'",
   "tx_mb": "'$tx_mb'",
-  "logged_in_users": "'$logged_in_users'",
-  "block_devices": "'$block_devices'",
-  "sys_logs": "'$sys_logs'"
+  "logged_in_users": "'$logged_in_users'"
 }'
