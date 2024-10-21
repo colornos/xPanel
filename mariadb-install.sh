@@ -12,7 +12,7 @@ sudo apt install -y net-tools dos2unix
 
 # Install Apache, PHP, MariaDB, SSH, Certbot, phpMyAdmin, Shellinabox, and xRDP
 echo "Installing required packages..."
-sudo apt install -y apache2 php libapache2-mod-php mariadb-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xdg-utils shellinabox xrdp
+sudo apt install -y apache2 php libapache2-mod-php mariadb-server php-mysql sshpass certbot python3-certbot-apache phpmyadmin xdg-utils shellinabox xrdp vim
 
 # Configure phpMyAdmin (automatically link it to Apache)
 echo "Configuring phpMyAdmin..."
