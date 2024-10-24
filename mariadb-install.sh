@@ -8,7 +8,7 @@ sudo apt update && sudo apt upgrade -y
 
 # Minimal desktop install
 sudo apt-get install ubuntu-desktop-minimal -y
-sudo apt install tigervnc-standalone-server -y
+sudo apt install slim tigervnc-standalone-server -y
 
 # Install basic utilities
 echo "Installing basic utilities..."
