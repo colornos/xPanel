@@ -6,6 +6,9 @@ echo "Starting xPanel Installation..."
 echo "Updating and upgrading the system..."
 sudo apt update && sudo apt upgrade -y
 
+# Minimal desktop install
+sudo apt-get install ubuntu-desktop-minimal
+
 # Install basic utilities
 echo "Installing basic utilities..."
 sudo apt install -y net-tools dos2unix
