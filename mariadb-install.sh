@@ -6,9 +6,10 @@ echo "Starting xPanel Installation..."
 echo "Updating and upgrading the system..."
 sudo apt update && sudo apt upgrade -y
 
+sudo apt install slim tigervnc-standalone-server -y
+
 # Minimal desktop install
 sudo apt-get install ubuntu-desktop-minimal -y
-sudo apt install slim tigervnc-standalone-server -y
 
 # Install basic utilities
 echo "Installing basic utilities..."
