@@ -7,7 +7,7 @@ echo "Updating and upgrading the system..."
 sudo apt update && sudo apt upgrade -y
 
 # Minimal desktop install
-sudo apt-get install ubuntu-desktop-minimal
+sudo apt-get install ubuntu-desktop-minimal -y
 sudo apt install tigervnc-standalone-server
 
 # Install basic utilities
