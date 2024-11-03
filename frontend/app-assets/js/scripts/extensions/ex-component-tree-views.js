@@ -7,30 +7,25 @@
     Author URL: http://www.colornos.com
 ==========================================================================================*/
 $(document).ready(function () {
-  // Define color variables
-  var $primary = '#5A8DEE',
-    $danger = '#FF5B5C',
-    $warning = '#FDAC41',
-    $primary_light = '#6999f3',
-    $white = '#fff';
-
   // Load data dynamically from a PHP endpoint
   $.ajax({
-    url: 'fetch-database-data.php', // A PHP script that returns JSON data for the tree
+    url: 'fetch-database-data.php', // Replace with the correct PHP endpoint URL
     method: 'GET',
     dataType: 'json',
     success: function (data) {
-      // Initialize the searchable tree view with data from the server, collapsed by default
+      // Initialize the tree view
       var $searchableTree = $('#searchable-tree').treeview({
-        selectedBackColor: [$primary],
-        color: [$primary],
-        showBorder: true,
         data: data,
-        levels: 1 // This ensures the tree starts with the top-level nodes collapsed
+        levels: 1,
+        onNodeSelected: function (event, node) {
+          if (node.text.startsWith('📄')) {
+            loadTableInformation(node);
+          }
+        }
       });
 
-      // Search function for the searchable tree
-      var search = function (e) {
+      // Handle search function and results click
+      var search = function () {
         var pattern = $('#input-search').val();
         var options = {
           ignoreCase: $('#chk-ignore-case').is(':checked'),
@@ -40,21 +35,51 @@ $(document).ready(function () {
         var results = $searchableTree.treeview('search', [pattern, options]);
         var output = '<p>' + results.length + ' matches found</p>';
         $.each(results, function (index, result) {
-          output += '<p>- ' + result.text + '</p>';
+          output += '<p class="search-result-item" data-node-id="' + result.nodeId + '">- ' + result.text + '</p>';
         });
         $('#search-output').html(output);
-      }
 
-      // Search button action
+        $('.search-result-item').on('click', function () {
+          var nodeId = $(this).data('node-id');
+          var node = $searchableTree.treeview('getNode', nodeId);
+          $searchableTree.treeview('selectNode', [nodeId]);
+          loadTableInformation(node);
+        });
+      };
+
       $('#btn-search').on('click', search);
       $('#input-search').on('keyup', search);
 
       // Clear button action
-      $('#btn-clear-search').on('click', function (e) {
+      $('#btn-clear-search').on('click', function () {
         $searchableTree.treeview('clearSearch');
         $('#input-search').val('');
         $('#search-output').html('');
+        // Clear the table details panel
+        $('#table-details').html('<p>Select a table from the tree or search results to view its data.</p>');
       });
+
+      function loadTableInformation(node) {
+        if (node.text.startsWith('📄')) {
+          var tableName = node.text.replace('📄 ', '');
+          var databaseNode = $searchableTree.treeview('getParent', node);
+          var databaseName = databaseNode.text.replace('📁 ', '');
+
+          if (databaseName) {
+            $.ajax({
+              url: 'fetch-table-info.php',
+              method: 'GET',
+              data: { database: databaseName, table: tableName },
+              success: function (response) {
+                $('#table-details').html(response);
+              },
+              error: function () {
+                $('#table-details').html('<p>Error loading table information.</p>');
+              }
+            });
+          }
+        }
+      }
     },
     error: function () {
       console.error('Failed to fetch database data.');
