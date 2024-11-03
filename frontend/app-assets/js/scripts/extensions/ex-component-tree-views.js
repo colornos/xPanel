@@ -2,9 +2,9 @@
     File Name: ex-component-tree-views.js
     Description: Bootstrap Tree View
     ----------------------------------------------------------------------------------------
-    Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
-    Author: PIXINVENT
-    Author URL: http://www.themeforest.net/user/pixinvent
+    Item Name: Colornos Admin - Clean Bootstrap 4 Dashboard HTML Template
+    Author: Colornos
+    Author URL: http://www.colornos.com
 ==========================================================================================*/
 $(document).ready(function () {
   // Define color variables
