@@ -217,7 +217,6 @@ function confirmShutdown() {
                             <div class="icon"><a href="file_manager.php"><i class="fas fa-folder"></i><div>Files</div></a></div>
                             <div class="icon"><a href="upload.php"><i class="fas fa-upload"></i><div>Upload</div></a></div>
                             <div class="icon"><a href="download.php"><i class="fas fa-download"></i><div>Download</div></a></div>
-                            <div class="icon"><a href="#"><i class="fas fa-network-wired"></i><div>MYSQL Connections</div></a></div>
                             <div class="icon"><a href="#"><i class="fas fa-hdd"></i><div>Disk Info</div></a></div>
                             <div class="icon"><a href="#"><i class="fas fa-database"></i><div>Backup</div></a></div>
                         </div>
@@ -229,24 +228,26 @@ function confirmShutdown() {
                         <div class="icons-grid">
                             <div class="icon"><a href="/phpmyadmin" target="_blank"><i class="fas fa-user"></i><div>phpMyAdmin</div></a></div>
                             <div class="icon"><a href="database.php"><i class="fas fa-server"></i><div>MySQL Databases</div></a></div>
+                            <div class="icon"><a href="#"><i class="fas fa-network-wired"></i><div>MYSQL Connections</div></a></div>
                         </div>
                     </div>
 
-                    <!-- Terminal Section -->
+                    <!-- System Controls -->
                     <div class="section">
-                        <div class="header-style">Terminal</div>
+                        <div class="header-style">System Controls</div>
                         <div class="icons-grid">
                             <div class="icon"><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank"><i class="fas fa-terminal"></i><div>Terminal</div></a></div>
+                            <div class="icon">
+                                <form method="POST" onsubmit="return confirmShutdown()">
+                                    <button type="submit" name="shutdown" style="background: none; border: none; cursor: pointer; color: #e74c3c;">
+                                        <i class="fas fa-power-off" style="font-size: 50px;"></i>
+                                        <div>Power Off</div>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-		    </div>
+                    </div>
 
-		    <!-- Power Section --> 
-		    <div class="section">     
-		        <div class="header-style">Power</div>     
-			<div class="icons-grid">         
-			    <div class="icon"><form method="POST" onsubmit="return confirmShutdown()"><button type="submit" name="shutdown" style="background: none; border: none; cursor: pointer; color: #e74c3c;"><i class="fas fa-power-off" style="font-size: 50px;"></i><div>Power Off</div></button></form></div>
-			</div> 
-		    </div>
                 </div>
 
                 <!-- Sidebar with Live Statistics -->
@@ -269,13 +270,15 @@ function confirmShutdown() {
                         <div class="stat-value" id="last_login_ip"><b><?php echo $last_login_ip; ?></b></div>
                     </div>
 
+                    <!-- Live Statistics -->
                     <div class="header-style">Live Statistics</div>
 
+                    <!-- Existing Statistics -->
                     <!-- CPU Usage -->
                     <div class="progress-container">
                         <div class="progress-label">CPU Usage</div>
                         <div class="stat-value">
-                            <strong><span id="cpu_usage_value"><?php echo $stats['cpu_usage']; ?></span></strong>
+                            <strong><span id="cpu_usage_value"><?php echo $stats['cpu_usage']; ?>%</span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="cpu-load" id="cpu_usage" style="width: <?php echo $stats['cpu_usage']; ?>%;"></span>
@@ -294,7 +297,7 @@ function confirmShutdown() {
                     <div class="stat">
                         <div class="stat-label">CPU Temperature:</div>
                         <div class="stat-value">
-                            <strong><span id="cpu_temp_value"><?php echo $stats['cpu_temp']; ?></span></strong>
+                            <strong><span id="cpu_temp_value"><?php echo $stats['cpu_temp']; ?> °F</span></strong>
                         </div>
                     </div>
 
@@ -302,7 +305,7 @@ function confirmShutdown() {
                     <div class="progress-container">
                         <div class="progress-label">Disk Usage</div>
                         <div class="stat-value">
-                            <span id="disk_usage_value"><?php echo $stats['disk_used']; ?></span> used
+                            <span id="disk_usage_value"><?php echo $stats['disk_used']; ?>%</span> used
                         </div>
                         <div class="progress-bar">
                             <span class="disk-usage" id="disk_usage" style="width: <?php echo $stats['disk_used']; ?>%;"></span>
@@ -315,7 +318,7 @@ function confirmShutdown() {
                         <div class="stat-value">
                             <?php echo round($stats['mem_used'], 2) . ' MB / ' . round($stats['mem_total'], 2) . ' MB'; ?>
                             <br>
-                            <strong><span id="mem_usage_value"><?php echo $stats['mem_usage']; ?></span></strong>
+                            <strong><span id="mem_usage_value"><?php echo $stats['mem_usage']; ?>%</span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="mem-usage" id="mem_usage" style="width: <?php echo $stats['mem_usage']; ?>%;"></span>
@@ -326,7 +329,7 @@ function confirmShutdown() {
                     <div class="progress-container">
                         <div class="progress-label">Network Received (MB)</div>
                         <div class="stat-value">
-                            <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?></span></strong>
+                            <strong><span id="rx_mb_value"><?php echo $stats['rx_mb']; ?> MB</span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="network-traffic" id="rx_mb" style="width: <?php echo $stats['rx_mb'] / 10; ?>%;"></span>
@@ -337,12 +340,72 @@ function confirmShutdown() {
                     <div class="progress-container">
                         <div class="progress-label">Network Transmitted (MB)</div>
                         <div class="stat-value">
-                            <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?></span></strong>
+                            <strong><span id="tx_mb_value"><?php echo $stats['tx_mb']; ?> MB</span></strong>
                         </div>
                         <div class="progress-bar">
                             <span class="network-traffic" id="tx_mb" style="width: <?php echo $stats['tx_mb'] / 10; ?>%;"></span>
                         </div>
                     </div>
+
+                    <!-- New System Information -->
+                    <div class="header-style">Detailed System Information</div>
+
+                    <div class="stat">
+                        <div class="stat-label">System Information as of:</div>
+                        <div class="stat-value">
+                            <strong><span id="system_time"><?php echo date('D M j H:i:s A T Y'); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">System Load:</div>
+                        <div class="stat-value">
+                            <strong><span id="system_load"><?php echo shell_exec("uptime | awk '{print $10}'"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Disk Usage (of /):</div>
+                        <div class="stat-value">
+                            <strong><span id="disk_usage"><?php echo shell_exec("df -h / | awk 'NR==2 {print $5 \" of \" $2}'"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Memory Usage:</div>
+                        <div class="stat-value">
+                            <strong><span id="memory_usage"><?php echo shell_exec("free -m | awk 'NR==2 {printf \"%.2f%%\", $3*100/$2 }'"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Swap Usage:</div>
+                        <div class="stat-value">
+                            <strong><span id="swap_usage"><?php echo shell_exec("free -m | awk 'NR==3 {printf \"%.2f%%\", $3*100/$2 }'"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Temperature:</div>
+                        <div class="stat-value">
+                            <strong><span id="temperature"><?php echo shell_exec("sensors | grep 'Package id 0:' | awk '{print $4}'"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Processes:</div>
+                        <div class="stat-value">
+                            <strong><span id="processes"><?php echo shell_exec("ps aux | wc -l"); ?></span></strong>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-label">Users Logged In:</div>
+                        <div class="stat-value">
+                            <strong><span id="users_logged_in"><?php echo shell_exec("who | wc -l"); ?></span></strong>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
