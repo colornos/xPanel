@@ -43,8 +43,20 @@ $home_directory = trim(shell_exec('echo ~' . $current_user));
 $last_login_info = shell_exec("last -n 1 $current_user | awk '{print $3}'");
 $last_login_ip = trim($last_login_info);
 $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
-?>
 
+// Handle the shutdown request 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['shutdown'])) {
+    // Execute the shutdown command
+    shell_exec('sudo shutdown now');
+    echo "The system is shutting down...";
+    exit; // End script execution after triggering the shutdown
+}
+?>
+<script>
+function confirmShutdown() {
+    return confirm("Are you sure you want to shutdown?");
+}
+</script>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
 <!-- BEGIN: Head-->
@@ -215,7 +227,7 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                     <div class="section">
                         <div class="header-style">Databases</div>
                         <div class="icons-grid">
-                            <div class="icon"><a href="/phpmyadmin" target="_blank"><i class="fas fa-database"></i><div>phpMyAdmin</div></a></div>
+                            <div class="icon"><a href="/phpmyadmin" target="_blank"><i class="fas fa-user"></i><div>phpMyAdmin</div></a></div>
                             <div class="icon"><a href="database.php"><i class="fas fa-server"></i><div>MySQL Databases</div></a></div>
                         </div>
                     </div>
@@ -226,7 +238,15 @@ $primary_domain = trim(shell_exec("hostname -I | awk '{print $1}'"));
                         <div class="icons-grid">
                             <div class="icon"><a href="https://<?php echo $primary_domain; ?>:4200" target="_blank"><i class="fas fa-terminal"></i><div>Terminal</div></a></div>
                         </div>
-                    </div>
+		    </div>
+
+		    <!-- Power Section --> 
+		    <div class="section">     
+		        <div class="header-style">Power</div>     
+			<div class="icons-grid">         
+			    <div class="icon"><form method="POST" onsubmit="return confirmShutdown()"><button type="submit" name="shutdown" style="background: none; border: none; cursor: pointer; color: #e74c3c;"><i class="fas fa-power-off" style="font-size: 50px;"></i><div>Power Off</div></button></form></div>
+			</div> 
+		    </div>
                 </div>
 
                 <!-- Sidebar with Live Statistics -->
