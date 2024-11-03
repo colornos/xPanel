@@ -57,63 +57,93 @@
     </nav>
     <!-- END: Header-->
 
-    <!-- BEGIN: Content-->
-    <div class="app-content content">
-        <div class="content-overlay"></div>
-        <div class="content-wrapper">
-            <div class="content-body">
-                <!-- Searchable Tree Treeview -->
-                <div class="col-lg-6 col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="card-title">Searchable Tree</h6>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <div class="seachbox mb-2">
-                                        <input type="text" class="form-control" placeholder="Search" id="input-search" name="input-search">
+<!-- BEGIN: Content -->
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-body">
+            <div class="container-fluid mt-2">
+                <div class="row">
+                    <!-- Searchable Tree Column -->
+                    <div class="col-lg-3 col-md-4 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title">Searchable Tree</h6>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="seachbox mb-2">
+                                            <input type="text" class="form-control" placeholder="Search" id="input-search" name="input-search">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-1">
-                                    <div class="col-sm-12">
-                                        <div class="form-group d-flex flex-wrap align-items-center mb-0">
-                                            <div class="checkbox mr-1 mb-50">
-                                                <input type="checkbox" class="checkbox__input" id="chk-ignore-case" value="false">
-                                                <label for="chk-ignore-case">Ignore Case</label>
-                                            </div>
-                                            <div class="checkbox mr-1 mb-50">
-                                                <input type="checkbox" class="checkbox__input" id="chk-exact-match" value="false">
-                                                <label for="chk-exact-match">Exact Match</label>
-                                            </div>
-                                            <div class="checkbox mr-1 mb-50">
-                                                <input type="checkbox" class="checkbox__input" id="chk-reveal-results" value="false">
-                                                <label for="chk-reveal-results">Reveal Results</label>
-                                            </div>
-                                            <div class="searchable-action">
-                                                <button type="button" class="btn btn-primary btn-sm mr-1 mb-50" id="btn-search">Search</button>
-                                                <button type="button" class="btn btn-light-primary btn-sm mb-50" id="btn-clear-search">Clear</button>
+                                    <div class="row mb-1">
+                                        <div class="col-sm-12">
+                                            <div class="form-group d-flex flex-wrap align-items-center mb-0">
+                                                <div class="checkbox mr-1 mb-50">
+                                                    <input type="checkbox" class="checkbox__input" id="chk-ignore-case" value="false">
+                                                    <label for="chk-ignore-case">Ignore Case</label>
+                                                </div>
+                                                <div class="checkbox mr-1 mb-50">
+                                                    <input type="checkbox" class="checkbox__input" id="chk-exact-match" value="false">
+                                                    <label for="chk-exact-match">Exact Match</label>
+                                                </div>
+                                                <div class="checkbox mr-1 mb-50">
+                                                    <input type="checkbox" class="checkbox__input" id="chk-reveal-results" value="false">
+                                                    <label for="chk-reveal-results">Reveal Results</label>
+                                                </div>
+                                                <div class="searchable-action">
+                                                    <button type="button" class="btn btn-primary btn-sm mr-1 mb-50" id="btn-search">Search</button>
+                                                    <button type="button" class="btn btn-light-primary btn-sm mb-50" id="btn-clear-search">Clear</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="searchable-tree"></div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-8 col-sm-12">
-                                        <div id="searchable-tree"></div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-12">
-                                        <div id="search-output"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Results Column -->
+                    <div class="col-lg-2 col-md-3 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title">Search Results</h6>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div id="search-output">
+                                        <p>Search results will appear here.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- End Searchable Tree Treeview -->
-            </div>
+
+                    <!-- Table Information Column -->
+                    <div class="col-lg-7 col-md-5 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title">Table Information</h6>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div id="table-info-panel">
+                                        <div id="table-details">
+                                            <p>Select a table from the tree or search results to view its data.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End of Row -->
+            </div> <!-- End of Container -->
         </div>
     </div>
-    <!-- END: Content-->
+</div>
+<!-- END: Content -->
 
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
